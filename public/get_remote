@@ -110,7 +110,7 @@ run_installer() {
     info "Launching installer..."
     echo ""
 
-    bash "$installer"
+    bash "$installer" </dev/tty
 }
 
 # ============================================================================
