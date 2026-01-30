@@ -23,18 +23,20 @@ This installation will **replace** your existing `~/.config` directory. Make sur
 
 ### Remote Installation (Recommended)
 
-The easiest way to install blxshell is using the remote installation script:
+The easiest way to install blxshell:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/binarylinuxx/dots/main/install.sh)
+curl -fsSL https://bshell.zapzig.org/get_remote | bash
 ```
 
 This will:
-1. Clone the repository
-2. Install yay if not present
-3. Build and install all metapackages
-4. Backup your existing config (optional)
-5. Copy dotfiles to `~/.config`
+1. Install `git` if not present
+2. Clone the repository to `~/.local/dots` (or pull if already exists)
+3. Detect your distro and validate compatibility
+4. Install yay if not present
+5. Build and install all metapackages
+6. Backup your existing config (optional)
+7. Copy dotfiles to `~/.config`
 
   </TabItem>
   
