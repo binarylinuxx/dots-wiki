@@ -1,0 +1,356 @@
+/* ============================================================================
+ * blxshell Material Design 3 Theme
+ * Palette generated from Material You (purple/violet)
+ * ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+/* ============================================================================
+ * Dark Theme (default)
+ *
+ * Starlight uses --sl-color-white as the BRIGHTEST text/icon color
+ * and --sl-color-black as the DARKEST background. The gray scale
+ * must go from light (gray-1) to dark (gray-6) for dark mode.
+ *
+ * Mapped from Material You surface palette:
+ *   white       = onSurface        #e9e0e7
+ *   gray-1      = onSurfaceVariant #cec3ce
+ *   gray-2      = outline          #978e97
+ *   gray-3      = outlineVariant   #4c444d
+ *   gray-4      = surfaceContainerHigh #2d282e
+ *   gray-5      = surfaceContainer #221e24
+ *   gray-6      = surfaceDim       #161217
+ *   black       = surfaceContainerLowest #110d12
+ * ============================================================================ */
+
+:root {
+	--sl-color-white: #e9e0e7;
+	--sl-color-gray-1: #cec3ce;
+	--sl-color-gray-2: #978e97;
+	--sl-color-gray-3: #4c444d;
+	--sl-color-gray-4: #2d282e;
+	--sl-color-gray-5: #221e24;
+	--sl-color-gray-6: #161217;
+	--sl-color-black: #110d12;
+
+	/* Primary accent - purple */
+	--sl-color-accent-low: #5b396c;
+	--sl-color-accent: #e2b7f4;
+	--sl-color-accent-high: #f6d9ff;
+	--sl-color-text-accent: #e2b7f4;
+}
+
+/* Light theme override */
+[data-theme='light'] {
+	--sl-color-white: #1e1a1f;
+	--sl-color-gray-1: #2d282e;
+	--sl-color-gray-2: #4c444d;
+	--sl-color-gray-3: #978e97;
+	--sl-color-gray-4: #cec3ce;
+	--sl-color-gray-5: #e9e0e7;
+	--sl-color-gray-6: #f6d9ff;
+	--sl-color-black: #ffffff;
+
+	--sl-color-accent-low: #f6d9ff;
+	--sl-color-accent: #755086;
+	--sl-color-accent-high: #432254;
+	--sl-color-text-accent: #5b396c;
+}
+
+/* ============================================================================
+ * Typography
+ * ============================================================================ */
+
+:root {
+	--sl-font: 'Inter', 'Rubik', system-ui, -apple-system, sans-serif;
+	--sl-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+	--sl-text-h1: 2.5rem;
+	--sl-text-h2: 2rem;
+	--sl-text-h3: 1.5rem;
+	--sl-text-h4: 1.25rem;
+	--sl-text-h5: 1.125rem;
+	--sl-line-height-headings: 1.3;
+}
+
+/* ============================================================================
+ * Material Symbols Icons
+ * ============================================================================ */
+
+.material-symbols-rounded {
+	font-family: 'Material Symbols Rounded';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 24px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	font-feature-settings: 'liga';
+	-webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================================
+ * Components
+ * ============================================================================ */
+
+.sl-card {
+	border-radius: 12px !important;
+}
+
+pre {
+	border-radius: 8px !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--sl-color-gray-6);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--sl-color-gray-3);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--sl-color-gray-2);
+}
+
+/* ============================================================================
+ * Accent utilities
+ *
+ * primary    = #e2b7f4
+ * secondary  = #d4c0d8
+ * tertiary   = #f5b7b6
+ * error      = #ffb4ab
+ * ============================================================================ */
+
+.accent-primary   { color: #e2b7f4; }
+.accent-secondary { color: #d4c0d8; }
+.accent-tertiary  { color: #f5b7b6; }
+.accent-error     { color: #ffb4ab; }
+
+/* ============================================================================
+ * Badges
+ * ============================================================================ */
+
+.badge {
+	display: inline-block;
+	padding: 0.25rem 0.75rem;
+	border-radius: 12px;
+	font-size: 0.875rem;
+	font-weight: 500;
+	background: var(--sl-color-gray-5);
+	color: var(--sl-color-white);
+}
+
+.badge-primary {
+	background: #5b396c;
+	color: #f6d9ff;
+}
+
+.badge-secondary {
+	background: #504255;
+	color: #f0dcf4;
+}
+
+/* ============================================================================
+ * Callout boxes
+ * ============================================================================ */
+
+.callout {
+	padding: 1rem;
+	margin: 1rem 0;
+	border-radius: 8px;
+	border-left: 4px solid;
+}
+
+.callout-info    { background: rgba(226, 183, 244, 0.08); border-color: #e2b7f4; }
+.callout-warning { background: rgba(245, 183, 182, 0.08); border-color: #f5b7b6; }
+.callout-error   { background: rgba(255, 180, 171, 0.08); border-color: #ffb4ab; }
+.callout-success { background: rgba(212, 192, 216, 0.08); border-color: #d4c0d8; }
+
+/* ============================================================================
+ * Images -- neon glow on hover
+ * ============================================================================ */
+
+img {
+	border-radius: 12px;
+	border: 2px solid transparent;
+	transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+img:hover {
+	border-color: #e2b7f4;
+	box-shadow:
+		0 0 10px rgba(226, 183, 244, 0.4),
+		0 0 30px rgba(226, 183, 244, 0.2),
+		0 0 60px rgba(226, 183, 244, 0.1);
+	transform: scale(1.01);
+}
+
+/* ============================================================================
+ * Showcase Carousel
+ * ============================================================================ */
+
+.showcase-carousel {
+	position: relative;
+	overflow: hidden;
+	border-radius: 12px;
+	border: 2px solid #4c444d;
+	transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	max-width: 100%;
+	height: auto;
+}
+
+.showcase-carousel:hover {
+	border-color: #e2b7f4;
+	box-shadow:
+		0 0 10px rgba(226, 183, 244, 0.4),
+		0 0 30px rgba(226, 183, 244, 0.2),
+		0 0 60px rgba(226, 183, 244, 0.1);
+}
+
+.showcase-track {
+	display: flex;
+	width: 300%;
+	height: 100%;
+	transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.showcase-slide {
+	width: 33.33%;
+	height: 100%;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.showcase-slide img,
+.showcase-slide video {
+	width: 100%;
+	height: auto;
+	display: block;
+	border-radius: 0;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+.showcase-slide img:hover,
+.showcase-slide video:hover {
+	border: none;
+	box-shadow: none;
+	transform: none;
+}
+
+/* Arrows */
+.showcase-arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 2;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	border: none;
+	background: rgba(34, 30, 36, 0.8);
+	color: #e2b7f4;
+	font-size: 24px;
+	line-height: 1;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transition: opacity 0.3s ease, background 0.2s ease;
+}
+
+.showcase-carousel:hover .showcase-arrow {
+	opacity: 1;
+}
+
+.showcase-arrow:hover {
+	background: rgba(91, 57, 108, 0.9);
+}
+
+.showcase-prev { left: 12px; }
+.showcase-next { right: 12px; }
+
+/* Dots */
+.showcase-nav {
+	position: absolute;
+	bottom: 12px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.showcase-dots {
+	display: flex;
+	gap: 8px;
+	background: rgba(34, 30, 36, 0.6);
+	padding: 6px 12px;
+	border-radius: 16px;
+	backdrop-filter: blur(8px);
+}
+
+.showcase-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: rgba(226, 183, 244, 0.3);
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.showcase-dots {
+	display: flex;
+	gap: 8px;
+}
+
+.showcase-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: rgba(226, 183, 244, 0.3);
+	cursor: pointer;
+	transition: all 0.3s ease;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.showcase-dot.active {
+	background: #e2b7f4;
+	transform: scale(1.2);
+	box-shadow: 0 0 8px rgba(226, 183, 244, 0.6);
+}
+
+.showcase-dot:hover:not(.active) {
+	background: rgba(226, 183, 244, 0.5);
+}
+
+
+
+/* ============================================================================
+ * Responsive
+ * ============================================================================ */
+
+@media (max-width: 768px) {
+	:root {
+		--sl-text-h1: 2rem;
+		--sl-text-h2: 1.75rem;
+		--sl-text-h3: 1.5rem;
+	}
+}

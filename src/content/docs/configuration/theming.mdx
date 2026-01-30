@@ -1,0 +1,351 @@
+---
+title: Theming
+description: Customize colors and appearance with Material Design 3
+---
+
+blxshell uses [matugen](https://github.com/InioX/matugen) to generate Material Design 3 color schemes from your wallpaper.
+
+## How It Works
+
+1. **You set a wallpaper** (manually or with `Super + W`)
+2. **Matugen extracts dominant colors** from the image
+3. **Generates Material Design 3 palette** with complementary shades
+4. **Updates all configs** automatically:
+   - Hyprland (`~/.config/hypr/colors.conf`)
+   - Quickshell (`~/.config/quickshell/Colors.json`)
+   - GTK (`~/.config/gtk-*/colors.css`)
+   - Terminal (PLACEHOLDER: Ghostty config)
+   - Rofi, Fuzzel, etc.
+
+## Change Wallpaper
+
+### Random Wallpaper
+
+Press `Super + W` to cycle through wallpapers in:
+- PLACEHOLDER: Default wallpaper directory
+- `~/.local/wallpapers/` (if you added them)
+
+### Set Specific Wallpaper
+
+```bash
+# Generate colors from any image
+matugen image /path/to/wallpaper.png
+```
+
+The colors will update across your entire system!
+
+## Color Scheme
+
+### Current Scheme
+
+View generated colors:
+
+```bash
+cat ~/.config/hypr/colors.conf
+cat ~/.config/quickshell/Colors.json
+```
+
+### Color Variables
+
+Material Design 3 provides these color roles:
+
+#### Surface Colors
+- `surface` - Main background
+- `surfaceContainer` - Elevated surfaces
+- `surfaceDim` / `surfaceBright` - Dimmed/brightened variants
+
+#### Primary Colors (Main accent)
+- `primary` - Primary accent color
+- `onPrimary` - Text on primary
+- `primaryContainer` - Primary containers
+- `onPrimaryContainer` - Text on containers
+
+#### Secondary Colors
+- `secondary` - Secondary accent
+- `onSecondary` - Text on secondary
+- `secondaryContainer` / `onSecondaryContainer`
+
+#### Tertiary Colors
+- `tertiary` - Tertiary accent
+- `onTertiary` - Text on tertiary
+- `tertiaryContainer` / `onTertiaryContainer`
+
+#### Semantic Colors
+- `error` / `onError` - Error states
+- `outline` / `outlineVariant` - Borders and dividers
+
+### Using Colors in Hyprland
+
+Colors are prefixed with `$` in Hyprland configs:
+
+```conf
+# Example from visual/general.conf
+general {
+    col.inactive_border = $on_primary
+    col.active_border = $primary $surface_container $primary
+}
+```
+
+## Matugen Configuration
+
+Edit `~/.config/matugen/config.toml`:
+
+```toml
+[config]
+# Color scheme variant
+# Options: scheme-tonal-spot, scheme-content, scheme-expressive, scheme-fidelity
+scheme = "scheme-content"
+
+# Mode: dark or light
+mode = "dark"
+
+# Contrast: -1.0 to 1.0
+contrast = 0.0
+
+[templates]
+# PLACEHOLDER: Add template paths
+```
+
+### Scheme Types
+
+**scheme-content** (default)
+- Colors match the wallpaper closely
+- High fidelity to source image
+- Best for photography
+
+**scheme-tonal-spot**
+- Creates harmonious tones
+- Less literal interpretation
+- Better for abstract wallpapers
+
+**scheme-expressive**
+- Bold, vibrant colors
+- High saturation
+- Energetic feel
+
+**scheme-fidelity**
+- Balanced between content and tonal
+- Preserves image essence with harmony
+
+### Try Different Schemes
+
+```bash
+# Expressive colors
+matugen image wallpaper.png --mode dark --scheme scheme-expressive
+
+# Tonal spot
+matugen image wallpaper.png --mode dark --scheme scheme-tonal-spot
+
+# Light mode
+matugen image wallpaper.png --mode light
+```
+
+## Manual Color Override
+
+### Set Specific Colors
+
+Use color picker to generate from a hex color:
+
+```bash
+# Generate from hex color instead of image
+matugen color "#FF5733"
+```
+
+### Edit Generated Colors
+
+Manually edit `~/.config/hypr/colors.conf`:
+
+```conf
+# Override specific colors
+$primary = #your_color
+$surface = #your_color
+```
+
+:::caution
+Manual edits will be overwritten next time matugen runs!
+:::
+
+### Permanent Color Override
+
+Create a template override in matugen config.
+
+PLACEHOLDER: Add example template override
+
+## Theme Presets
+
+### Nord-Inspired
+
+```bash
+matugen color "#88C0D0"
+```
+
+### Catppuccin-Style
+
+```bash
+matugen color "#CBA6F7" --scheme scheme-tonal-spot
+```
+
+### Gruvbox-Like
+
+```bash
+matugen color "#D79921" --scheme scheme-expressive
+```
+
+### Tokyo Night
+
+```bash
+matugen color "#7AA2F7"
+```
+
+## GTK Theme
+
+blxshell applies colors to GTK apps automatically.
+
+### GTK 3
+
+`~/.config/gtk-3.0/gtk.css` - Auto-generated
+
+### GTK 4
+
+`~/.config/gtk-4.0/gtk.css` - Auto-generated
+
+### Manual GTK Tweaks
+
+Install GTK theme manager:
+
+```bash
+yay -S nwg-look  # Wayland GTK theme switcher
+```
+
+## Terminal Colors
+
+PLACEHOLDER: How are terminal colors configured?
+
+### Ghostty
+
+Edit PLACEHOLDER: `~/.config/ghostty/config`:
+
+```conf
+# PLACEHOLDER: Terminal color config
+```
+
+## Quickshell Theming
+
+### Bar Colors
+
+Colors update automatically from `Colors.json`.
+
+To force specific colors, edit widgets:
+
+```qml
+// Example: ~/.config/quickshell/bar/Bar.qml
+Rectangle {
+    color: col.surface  // Uses auto-generated color
+    // Or hardcode:
+    // color: "#191113"
+}
+```
+
+### Widget Styling
+
+Quickshell widgets inherit colors from `Colors.json`.
+
+View current palette:
+
+```bash
+cat ~/.config/quickshell/Colors.json
+```
+
+## Advanced Theming
+
+### Per-App Colors
+
+Create app-specific color overrides:
+
+```conf
+# ~/.config/hypr/rules/windowrules.conf
+windowrule = bordercolor $tertiary, ^(firefox)$
+windowrule = bordercolor $secondary, ^(code)$
+```
+
+### Time-Based Themes
+
+PLACEHOLDER: Auto-switch dark/light based on time?
+
+Script idea:
+
+```bash
+#!/bin/bash
+# Switch theme based on time
+hour=$(date +%H)
+if [ $hour -ge 6 ] && [ $hour -lt 18 ]; then
+    matugen image wallpaper.png --mode light
+else
+    matugen image wallpaper.png --mode dark
+fi
+```
+
+### Wallpaper Collections
+
+Organize wallpapers by theme:
+
+```bash
+~/.local/wallpapers/
+├── nature/
+├── minimal/
+├── dark/
+└── light/
+```
+
+PLACEHOLDER: Can launcher select from specific folder?
+
+## Troubleshooting
+
+### Colors Don't Update
+
+Reload Hyprland:
+
+```bash
+hyprctl reload
+```
+
+Restart Quickshell:
+
+```bash
+killall qs && qs &
+```
+
+### GTK Apps Don't Match
+
+Check if GTK theme is set:
+
+```bash
+gsettings get org.gnome.desktop.interface gtk-theme
+```
+
+Force reload:
+
+```bash
+gsettings set org.gnome.desktop.interface gtk-theme 'Default'
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
+```
+
+### Wrong Colors Generated
+
+Try different scheme:
+
+```bash
+matugen image wallpaper.png --scheme scheme-tonal-spot
+```
+
+Or pick a dominant color manually:
+
+```bash
+matugen color "#extracted_color"
+```
+
+## See Also
+
+- [Matugen Documentation](https://github.com/InioX/matugen)
+- [Material Design 3](https://m3.material.io/)
+- [Customization Guide](/customization/colors/)

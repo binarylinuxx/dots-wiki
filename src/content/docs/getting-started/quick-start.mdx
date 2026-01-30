@@ -1,0 +1,207 @@
+---
+title: Quick Start
+description: Get up and running with blxshell in 5 minutes
+---
+
+## Installation (2 minutes)
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/binarylinuxx/dots/main/install.sh)
+```
+
+Follow the prompts and logout when complete.
+
+## First Login (1 minute)
+
+1. Select **Hyprland** from your login manager
+2. Login with your credentials
+3. Wait for Quickshell to load (~5 seconds)
+
+You should see the bar appear at the top with workspaces, system tray, and clock.
+
+## Essential Keybindings (2 minutes)
+
+:::tip[Pro Tip]
+The modifier key is **Super** (Windows key)
+:::
+
+### Most Important
+
+| Keybind | Action |
+|---------|--------|
+| `Super + Return` | Open terminal |
+| `Super + Q` | Close window |
+| `Super + Space` | Open launcher |
+| `Super + S` | Open settings |
+| `Super + W` | Change wallpaper |
+
+### Workspaces
+
+| Keybind | Action |
+|---------|--------|
+| `Super + 1-9` | Switch to workspace 1-9 |
+| `Super + Shift + 1-9` | Move window to workspace |
+| `Super + Mouse Wheel` | Cycle workspaces |
+
+### Window Management
+
+| Keybind | Action |
+|---------|--------|
+| `Super + T` | Toggle floating |
+| `Super + Arrow Keys` | Move focus |
+| `Super + Mouse Drag` | Move window |
+| `Super + Right Mouse` | Resize window |
+
+See [all keybindings](/configuration/keybindings/) →
+
+## Try It Out
+
+### 1. Open Terminal
+Press `Super + Return`
+
+```bash
+# Check your shell
+echo $SHELL
+# Should show: /usr/bin/fish
+
+# Check theme colors
+cat ~/.config/hypr/colors.conf
+```
+
+### 2. Open Launcher
+Press `Super + Space`
+
+- Type to search applications
+- Use arrow keys to navigate
+- Press Enter to launch
+
+### 3. Change Wallpaper
+Press `Super + W`
+
+Your colors will automatically update to match the new wallpaper!
+
+### 4. Open Settings
+Press `Super + S`
+
+Configure:
+- Bar appearance
+- Launcher behavior
+- Workspace settings
+- Visual effects
+
+## Customize Your Setup
+
+### Change Colors
+
+Colors are generated from your wallpaper:
+
+```bash
+# Use any image
+matugen image /path/to/wallpaper.png
+
+# Or use a specific color
+matugen color "#FF5733"
+```
+
+### Change Fonts
+
+Edit `~/.config/quickshell/config.json`:
+
+```json
+{
+  "fontFamily": "Your Font Name",
+  "fontSize": 14
+}
+```
+
+### Modify Keybindings
+
+Edit `~/.config/hypr/keyboard/binds.conf`:
+
+```conf
+# Add your custom binds
+bind = $mainMod, X, exec, your-command
+```
+
+## Next Steps
+
+<div class="sl-flex">
+  <a href="/configuration/hyprland/" class="sl-link">
+    <span class="material-symbols-rounded">settings</span>
+    Configure Hyprland
+  </a>
+  <a href="/configuration/quickshell/" class="sl-link">
+    <span class="material-symbols-rounded">widgets</span>
+    Customize Quickshell
+  </a>
+  <a href="/customization/colors/" class="sl-link">
+    <span class="material-symbols-rounded">palette</span>
+    Theme Your Desktop
+  </a>
+</div>
+
+## Common Tasks
+
+### Take a Screenshot
+Press `Print Screen`
+
+Screenshots are saved to clipboard.
+
+### Record Screen
+- `Super + N` - Start recording
+- `Super + E` - Stop recording
+
+Videos saved to `~/Videos/` with timestamp
+
+### Adjust Volume
+- `XF86AudioRaiseVolume` - Volume up
+- `XF86AudioLowerVolume` - Volume down
+- `XF86AudioMute` - Toggle mute
+
+Or click the volume icon in the system tray
+
+### Control Media
+- `XF86AudioPlay` - Play/pause
+- `XF86AudioNext` - Next track
+- `XF86AudioPrev` - Previous track
+
+## Tips & Tricks
+
+### Speed Up Animations
+
+Edit `~/.config/hypr/visual/o2-vertical.conf`:
+
+```conf
+animations {
+    # Change bezier curves for faster animations
+    bezier = workspaceIn, 0.22, 1, 0.36, 1
+}
+```
+
+### Add More Workspaces
+
+Edit `~/.config/quickshell/config.json`:
+
+```json
+{
+  "workspaceCount": 15,  // Default is 10
+  "dynamicWorkspaces": true
+}
+```
+
+### Change Bar Height
+
+Edit `~/.config/quickshell/config.json`:
+
+```json
+{
+  "barHeight": 40,  // Default is 35
+  "barRadius": 30
+}
+```
+
+## Getting Help
+
+- [FAQ](/troubleshooting/faq/) - Common questions
+- [Troubleshooting](/troubleshooting/common-issues/) - Fix issues
+- [GitHub Issues](https://github.com/binarylinuxx/dots/issues) - Report bugs

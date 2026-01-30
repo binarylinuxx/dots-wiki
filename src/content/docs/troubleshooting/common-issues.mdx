@@ -1,0 +1,27 @@
+---
+title: Common Issues
+description: Solutions to frequently encountered problems
+---
+
+## Quick Fixes
+
+### Quickshell not starting
+
+```bash
+killall qs
+qs &
+```
+
+### Colors not updating
+
+```bash
+hyprctl reload
+```
+
+### Black screen after login
+
+Press `Super + Return` to open terminal, then check logs:
+
+```bash
+journalctl --user -b
+```

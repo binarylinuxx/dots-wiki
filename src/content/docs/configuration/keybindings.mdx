@@ -1,0 +1,299 @@
+---
+title: Keybindings
+description: Complete keyboard shortcut reference for blxshell
+---
+
+All keybindings use **Super** (Windows key) as the main modifier (`$mainMod`).
+
+## Essential
+
+| Keybind | Action | Description |
+|---------|--------|-------------|
+| `Super + Return` | Terminal | Open Ghostty terminal |
+| `Super + Q` | Kill Window | Close focused window |
+| `Super + Space` | Launcher | Toggle Quickshell launcher |
+| `Super + S` | Settings | Toggle Quickshell settings |
+| `Super + W` | Wallpaper | Change wallpaper (colors update) |
+| `Super + T` | Toggle Float | Make window floating/tiled |
+
+## Quickshell Globals
+
+These are handled by Quickshell, not Hyprland:
+
+| Keybind | Action | Description |
+|---------|--------|-------------|
+| `Super + Space` | `quickshell:LauncherToggle` | Open/close launcher |
+| `Super + S` | `quickshell:SettingsToggle` | Open/close settings |
+| `Super + I` | `quickshell:toggleKB` | Toggle on-screen keyboard |
+| `Super + C` | `quickshell:untoggleKB` | Hide keyboard |
+| `Alt + Space` | `quickshell:togglePie` | Toggle pie menu |
+| `Super + K` | `quickshell:toggleKB` | Keyboard toggle (alt bind) |
+| `Super + Escape` | `quickshell:untoggleKB` | Hide keyboard (alt bind) |
+
+## Workspaces
+
+### Switch Workspace
+
+| Keybind | Action |
+|---------|--------|
+| `Super + 1` | Workspace 1 |
+| `Super + 2` | Workspace 2 |
+| `Super + 3` | Workspace 3 |
+| `Super + 4` | Workspace 4 |
+| `Super + 5` | Workspace 5 |
+| `Super + 6` | Workspace 6 |
+| `Super + 7` | Workspace 7 |
+| `Super + 8` | Workspace 8 |
+| `Super + 9` | Workspace 9 |
+| `Super + 0` | Workspace 10 |
+
+### Move Window to Workspace
+
+| Keybind | Action |
+|---------|--------|
+| `Super + Shift + 1` | Move to workspace 1 |
+| `Super + Shift + 2` | Move to workspace 2 |
+| `Super + Shift + 3` | Move to workspace 3 |
+| `Super + Shift + 4` | Move to workspace 4 |
+| `Super + Shift + 5` | Move to workspace 5 |
+| `Super + Shift + 6` | Move to workspace 6 |
+| `Super + Shift + 7` | Move to workspace 7 |
+| `Super + Shift + 8` | Move to workspace 8 |
+| `Super + Shift + 9` | Move to workspace 9 |
+| `Super + Shift + 0` | Move to workspace 10 |
+
+### Special Workspace
+
+| Keybind | Action | Description |
+|---------|--------|-------------|
+| `Super + S` | Toggle special | Show/hide scratchpad |
+| `Super + Shift + S` | Move to special | Send window to scratchpad |
+
+:::note
+`Super + S` opens Settings panel via Quickshell global keybind.
+:::
+
+### Scroll Through Workspaces
+
+| Keybind | Action |
+|---------|--------|
+| `Super + Mouse Wheel Down` | Next workspace |
+| `Super + Mouse Wheel Up` | Previous workspace |
+
+## Window Focus
+
+| Keybind | Action |
+|---------|--------|
+| `Super + Left` | Focus left |
+| `Super + Right` | Focus right |
+| `Super + Up` | Focus up |
+| `Super + Down` | Focus down |
+
+## Window Actions
+
+| Keybind | Action | Description |
+|---------|--------|-------------|
+| `Super + Q` | Kill | Close active window |
+| `Super + T` | Toggle Float | Float/tile window |
+| `Super + P` | Pseudo | Dwindle pseudo mode |
+
+## Mouse Actions
+
+| Keybind | Action |
+|---------|--------|
+| `Super + Left Click Drag` | Move window | Drag floating windows |
+| `Super + Right Click Drag` | Resize window | Resize any window |
+
+## Screenshots & Recording
+
+| Keybind | Action | Description |
+|---------|--------|-------------|
+| `Print Screen` | Screenshot | Full screen to clipboard |
+| `Super + N` | Start Recording | Record screen to video |
+| `Super + E` | Stop Recording | End recording |
+
+Videos saved to: `~/Videos/blxshell-V3-TIMESTAMP.mp4`
+
+## Media Keys
+
+### Audio
+
+| Keybind | Action |
+|---------|--------|
+| `XF86AudioRaiseVolume` | Volume up +5% |
+| `XF86AudioLowerVolume` | Volume down -5% |
+| `XF86AudioMute` | Toggle mute |
+| `XF86AudioMicMute` | Toggle mic mute |
+
+### Playback
+
+| Keybind | Action |
+|---------|--------|
+| `XF86AudioPlay` | Play/Pause |
+| `XF86AudioPause` | Play/Pause |
+| `XF86AudioNext` | Next track |
+| `XF86AudioPrev` | Previous track |
+
+### Brightness
+
+| Keybind | Action |
+|---------|--------|
+| `XF86MonBrightnessUp` | Brightness +10% |
+| `XF86MonBrightnessDown` | Brightness -10% |
+
+## Customizing Keybindings
+
+Edit `~/.config/hypr/keyboard/binds.conf`:
+
+### Add a Keybind
+
+```conf
+# Format: bind = MODIFIER, KEY, ACTION, COMMAND
+bind = $mainMod, B, exec, firefox
+bind = $mainMod, E, exec, thunar
+bind = $mainMod SHIFT, C, exec, code
+```
+
+### Remove a Keybind
+
+Comment it out with `#`:
+
+```conf
+# bind = $mainMod, W, exec, randwall
+```
+
+### Change Modifier
+
+```conf
+# Use Alt instead of Super
+bind = ALT, Space, exec, rofi -show drun
+
+# Use Ctrl + Shift
+bind = CTRL SHIFT, T, exec, kitty
+```
+
+### Available Modifiers
+
+- `$mainMod` - Super (Windows key)
+- `SHIFT`
+- `CTRL` (or `CONTROL`)
+- `ALT`
+- `MOD2` - Num Lock
+- `MOD3` - Hyper key (rarely used)
+
+### Bind Types
+
+```conf
+# Normal bind (press once)
+bind = $mainMod, A, exec, command
+
+# Bind with repeat (hold key)
+binde = $mainMod, H, resizeactive, -10 0
+
+# Bind that works even when locked
+bindl = , XF86AudioPlay, exec, playerctl play-pause
+
+# Bind with repeat that works when locked
+bindel = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+
+# Mouse bind
+bindm = $mainMod, mouse:272, movewindow
+```
+
+### Global Keybinds (Quickshell)
+
+For Quickshell actions:
+
+```conf
+# Format: bind = MODIFIER, KEY, global, quickshell:ACTION
+bind = $mainMod, M, global, quickshell:YourAction
+```
+
+Then implement in Quickshell QML.
+
+## Keybind References
+
+### Find Key Names
+
+```bash
+# Monitor keypresses
+wev
+
+# List all current binds
+hyprctl binds
+```
+
+### Special Keys
+
+| Name | Key |
+|------|-----|
+| `Print` | Print Screen |
+| `Return` | Enter |
+| `space` | Space |
+| `code:45` | K key (keycode) |
+| `code:9` | Escape key |
+| `mouse:272` | Left click |
+| `mouse:273` | Right click |
+| `mouse_down` | Scroll down |
+| `mouse_up` | Scroll up |
+
+## Tips
+
+### Quick App Launch
+
+Create keybinds for your most-used apps:
+
+```conf
+bind = $mainMod, B, exec, brave
+bind = $mainMod, C, exec, code
+bind = $mainMod, D, exec, discord
+bind = $mainMod, F, exec, thunar
+bind = $mainMod, M, exec, spotify
+```
+
+### Window Management
+
+```conf
+# Fullscreen
+bind = $mainMod, F, fullscreen, 0
+
+# Maximize (keep gaps)
+bind = $mainMod, M, fullscreen, 1
+
+# Pin window on all workspaces
+bind = $mainMod, P, pin
+
+# Move to next/prev workspace
+bind = $mainMod, bracketleft, workspace, e-1
+bind = $mainMod, bracketright, workspace, e+1
+```
+
+### Resize with Keyboard
+
+```conf
+# Enter resize mode
+bind = $mainMod, R, submap, resize
+
+# Resize submap
+submap = resize
+binde = , right, resizeactive, 10 0
+binde = , left, resizeactive, -10 0
+binde = , up, resizeactive, 0 -10
+binde = , down, resizeactive, 0 10
+bind = , escape, submap, reset
+submap = reset
+```
+
+## Conflicts to Avoid
+
+Some keybinds are already used by system:
+
+- `Super + L` - Lock screen (`qs ipc call lockscreen lock`)
+- `Super + S` - Settings panel
+- `Super + Escape` - Power menu (`qs ipc call -- powermenu toggle`)
+
+## See Also
+
+- [Hyprland Binds Wiki](https://wiki.hyprland.org/Configuring/Binds/)
+- [Quickshell Configuration](/configuration/quickshell/)
+- [Window Rules](/customization/window-rules/)

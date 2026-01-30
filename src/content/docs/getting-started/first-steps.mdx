@@ -1,0 +1,161 @@
+---
+title: First Steps
+description: What to do after installing blxshell
+---
+
+Welcome to blxshell! Here's what to do after your first login.
+
+### Keybinds important to know
+
+Try these essential shortcuts:
+
+| Action | Keybind | Expected Result |
+|--------|---------|-----------------|
+| Terminal | `Super + Return` | Ghostty(Terminal) opens |
+| Launcher | `Super + Space` | Search overlay appears |
+| Settings | `Super + S` | Settings panel opens |
+| Wallpaper | `Super + W` | Wallpaper changes |
+| Lock screen | `Super + L` | Lockscreen appears |
+| Power menu | `Super + Escape` | Shutdown/reboot/logout menu |
+
+### Lockscreen & Power Menu
+
+blxshell includes a built-in lockscreen and power menu controlled via IPC:
+
+```bash
+# Lock screen
+qs ipc call lockscreen lock
+
+# Power menu
+qs ipc call -- powermenu toggle
+```
+
+These are already bound to `Super + L` and `Super + Escape` by default.
+
+### Verify Colors
+
+Your theme should match your wallpaper:
+
+```bash
+cat ~/.config/hypr/colors.conf
+# Should show Material Design 3 colors
+```
+
+## Configure Your Workflow
+
+### Set Your Wallpaper
+
+Add your wallpapers to a directory:
+
+```bash
+mkdir -p ~/.local/wallpapers
+cp /path/to/your/images/* ~/.local/wallpapers/
+```
+
+Set wallpaper:
+- Press `Super + W` to pick random one for you
+
+### Customize the Launcher
+
+The launcher has multiple modes:
+
+**Application Launcher** (default)
+- Type to search apps
+- Arrow keys to navigate
+- Enter to launch
+
+**Emoji Picker**
+- type :emoji
+- Type to search emoji
+- Enter to copy
+
+**Clipboard Manager**
+- type /clip 
+- Recent clipboard history
+- Click to paste
+
+**Wallpaper Selector**
+- Get all your wallpapers you want to ``~/.local/wallpaper`` 
+- type :emoji
+- Browse wallpapers visually
+- Click to apply
+
+### Configure the Bar
+
+Press `Super + S` to open settings:
+
+**Bar Settings:**
+- Floating or attached
+- Height and radius
+- Position (top/bottom)
+- Gap from edges
+
+**Workspace Settings:**
+- Number of workspaces
+- Dynamic workspaces
+- Style (dots/numbers/icons)
+
+**Visual Settings:**
+- Animation speed
+- Screen corners
+- Wallpaper effects
+
+## Customize Appearance
+
+### Change Theme Colors
+
+#### From Wallpaper
+```bash
+# Generate from any image
+matugen image /path/to/wallpaper.png
+
+# Colors auto-apply to:
+# - Hyprland (borders, etc)
+# - Quickshell (bar, widgets)
+# - GTK apps
+# - Terminal
+```
+
+### Change Fonts
+
+System-wide font in Quickshell:
+
+```json
+// ~/.config/quickshell/config.json
+{
+  "fontFamily": "Rubik",  // Try: Bitcount Single, JetBrains Mono
+  "fontSize": 14
+}
+```
+
+### Adjust Gaps and Borders
+
+Edit `~/.config/hypr/visual/general.conf`:
+
+```conf
+general {
+    gaps_in = 3       # Inner gaps
+    gaps_out = 5      # Outer gaps
+    border_size = 1   # Window border thickness
+}
+```
+
+## Set Up Autostart
+
+Edit `~/.config/hypr/autostart.conf`:
+
+```conf
+# Already running:
+exec-once = qs &  # Quickshell
+exec-once = dex -a -s ~/.config/autostart/ &
+
+# Add your apps:
+# exec-once = firefox &
+# exec-once = spotify &
+# exec-once = discord &
+```
+
+## Need Help?
+
+- [FAQ](/troubleshooting/faq/)
+- [GitHub Discussions](https://github.com/binarylinuxx/dots/discussions)

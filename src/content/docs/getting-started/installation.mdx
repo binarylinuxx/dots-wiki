@@ -1,0 +1,179 @@
+---
+title: Installation
+description: Install blxshell on your Arch Linux system
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Prerequisites
+
+- **Arch Linux** or Arch-based distribution
+- **Internet connection** for downloading packages
+- **Minimum 1GB free disk space**
+- **yay** AUR helper (will be installed automatically if missing)
+
+:::caution
+This installation will **replace** your existing `~/.config` directory. Make sure to backup your current configuration before proceeding.
+:::
+
+## Installation Methods
+
+<Tabs>
+  <TabItem label="Remote Install">
+
+### Remote Installation (Recommended)
+
+The easiest way to install blxshell is using the remote installation script:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/binarylinuxx/dots/main/install.sh)
+```
+
+This will:
+1. Clone the repository
+2. Install yay if not present
+3. Build and install all metapackages
+4. Backup your existing config (optional)
+5. Copy dotfiles to `~/.config`
+
+  </TabItem>
+  
+  <TabItem label="Local Install">
+
+### Local Installation
+
+If you prefer to review the code first:
+
+```bash
+# Clone the repository
+git clone https://github.com/binarylinuxx/dots.git
+cd dots
+
+# Run the installer
+./install.sh
+```
+
+The script will guide you through the installation process with confirmation prompts.
+
+  </TabItem>
+  
+  <TabItem label="Manual Install">
+
+### Manual Installation
+
+For advanced Non Arch users:
+
+#### 1. Install metapackages
+Or install individual components(for full control):
+
+# ARCH-BASED
+Install components:
+```bash
+# Core components
+cd arch-deps/blxshell-shell && makepkg -si
+cd arch-deps/blxshell-hyprland && makepkg -si
+cd arch-deps/blxshell-audio && makepkg -si
+cd arch-deps/blxshell-font-bitcount && makepkg -si
+cd arch-deps/blxshell-font-googlesansflex && makepkg -si
+```
+
+#### 2. Copy dotfiles
+
+```bash
+# Backup existing config
+cp -r ~/.config ~/.config.backup
+
+# Copy new config
+cp -r .config/* ~/.config/
+```
+
+  </TabItem>
+</Tabs>
+
+## Post-Installation
+
+### 1. Set Fish as Default Shell
+
+```bash
+chsh -s $(which fish)
+```
+
+### 2. Generate Initial Theme
+
+The first time you login, matugen will generate colors from your wallpaper:
+
+```bash
+# If needed, manually generate
+matugen image /path/to/your/wallpaper.png
+```
+
+### 3. Logout and Login to Hyprland
+
+1. Logout from your current session
+2. Select **Hyprland** from your login manager (NOT UWSM)
+3. Login with your credentials
+
+:::tip
+Use **Hyprland** session, not "Hyprland (uwsm)" if available
+:::
+
+## What Gets Installed
+
+### Core Packages
+- `hyprland` - Wayland compositor
+- `quickshell-git` - Shell interface
+- `fish` - Shell
+- `starship` - Prompt
+- `ghostty` - Terminal
+- `matugen` - Theming
+
+### Audio Stack
+- `pipewire-pulse` - Audio server
+- `wireplumber` - Session manager
+- `pavucontrol-qt` - Volume control
+- `playerctl` - Media controls
+- `cava` - Audio visualizer
+
+### Fonts
+- `ttf-jetbrains-mono-nerd` - Monospace font
+- `ttf-material-symbols-variable-git` - Icons
+- `ttf-rubik-vf` - UI font
+- `blxshell-font-bitcount` - Custom pixel font
+- `blxshell-font-googlesans` - Google Sans Flex
+
+See the [Packages Overview](/packages/overview/) for complete list.
+
+## Troubleshooting
+
+### Installation fails with "No space left on device"
+Free up at least 1GB of disk space and try again.
+
+### "yay: command not found"
+The installer should install yay automatically. If not:
+```bash
+sudo pacman -S --needed git base-devel
+git clone https://aur.archlinux.org/yay-bin.git
+cd yay-bin && makepkg -si
+```
+
+### Quickshell doesn't start
+Check if it's installed:
+```bash
+which qs
+# If not found, reinstall
+yay -S quickshell-git
+```
+
+### Black screen after login
+Press `Super + Return` to open terminal, then check logs:
+```bash
+journalctl --user -b
+```
+
+See [Troubleshooting](/troubleshooting/common-issues/) for more solutions.
+
+## Next Steps
+
+- [First Steps](/getting-started/first-steps/) - Learn the basics
+- [Keybindings](/configuration/keybindings/) - Essential shortcuts
+- [Theming](/configuration/theming/) - Customize colors

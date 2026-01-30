@@ -1,0 +1,78 @@
+---
+title: blxshell
+description: Material Design 3 Hyprland rice with Quickshell
+template: splash
+hero:
+  tagline: A beautiful Material Design 3 themed Hyprland setup with Quickshell, featuring dynamic theming, modular configuration, and seamless integration.
+  image:
+    file: ../../assets/shot-2026-01-28-22-06-53.png
+  actions:
+    - text: Get Started
+      link: /getting-started/installation/
+      icon: rocket
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/binarylinuxx/dots
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Preview
+
+<div class="showcase-carousel" id="showcase">
+	<button class="showcase-arrow showcase-prev" onclick="showcaseGo(-1)">&#8249;</button>
+	<button class="showcase-arrow showcase-next" onclick="showcaseGo(1)">&#8250;</button>
+	<div class="showcase-track" id="showcase-track">
+		<div class="showcase-slide">
+			<img src="/shot-2026-01-28-22-06-53.png" alt="blxshell desktop" />
+		</div>
+		<div class="showcase-slide">
+			<img src="/shot-2026-01-30-17-07-56.png" alt="blxshell updated interface" />
+		</div>
+		<div class="showcase-slide">
+			<video autoplay loop muted playsinline>
+				<source src="https://github.com/user-attachments/assets/a82b691f-ba58-4d4f-b756-543f4b52b5cb" type="video/mp4" />
+			</video>
+		</div>
+	</div>
+	<div class="showcase-nav">
+		<div class="showcase-dots">
+			<div class="showcase-dot active" onclick="showcaseSet(0)"></div>
+			<div class="showcase-dot" onclick="showcaseSet(1)"></div>
+			<div class="showcase-dot" onclick="showcaseSet(2)"></div>
+		</div>
+	</div>
+</div>
+
+<script>{`
+	var showcaseIdx = 0;
+	var showcaseTotal = 3;
+	function showcaseSet(i) {
+		showcaseIdx = i;
+		document.getElementById('showcase-track').style.transform = 'translateX(-' + (i * 33.33) + '%)';
+		document.querySelectorAll('.showcase-dot').forEach(function(d, j) {
+			d.classList.toggle('active', j === i);
+		});
+	}
+	function showcaseGo(dir) {
+		var next = showcaseIdx + dir;
+		if (next < 0) next = showcaseTotal - 1;
+		if (next >= showcaseTotal) next = 0;
+		showcaseSet(next);
+	}
+`}</script>
+
+## What's Included
+
+- **Hyprland** - Dynamic tiling Wayland compositor
+- **Quickshell** - Custom QML-based shell and widgets
+- **Matugen** - Material Design 3 color generation
+- **Fish Shell** - Modern, user-friendly shell
+- **Starship** - Fast, customizable prompt
+- **Ghostty** - GPU-accelerated terminal emulator
+
+
+
+
