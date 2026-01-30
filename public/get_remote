@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+# ============================================================================
+# blxshell Remote Installer Bootstrap
+# ============================================================================
+# Usage:
+#   bash <(curl -fsSL https://binarylinuxx.github.io/dots-wiki/get_remote)
+# ============================================================================
+
+set -eo pipefail
+
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly BLUE='\033[0;34m'
+readonly YELLOW='\033[0;33m'
+readonly CYAN='\033[0;36m'
+readonly BOLD='\033[1m'
+readonly NC='\033[0m'
+readonly LOG_FILE="/tmp/blxshell_get_remote_$(date +%Y%m%d_%H%M%S).log"
+readonly REPO_URL="https://github.com/binarylinuxx/dots.git"
+readonly REPO_DIR="$HOME/.local/dots"
+
+# ============================================================================
+# Utility Functions
+# ============================================================================
+
+log() { echo "[$(date '+%H:%M:%S')] $*" >> "$LOG_FILE"; }
+
+info()    { echo -e "${BLUE}::${NC} $1"; log "INFO: $1"; }
+success() { echo -e "${GREEN}[+]${NC} $1"; log "SUCCESS: $1"; }
+warning() { echo -e "${YELLOW}[!]${NC} $1"; log "WARNING: $1"; }
+error()   { echo -e "${RED}[-]${NC} $1"; log "ERROR: $1"; }
+
+die() { error "$1"; exit 1; }
+
+command_exists() { command -v "$1" &>/dev/null; }
+
+# ============================================================================
+# Banner
+# ============================================================================
+
+show_banner() {
+    echo -e "${CYAN}"
+    cat << 'EOF'
+  _     _          _          _ _
+ | |__ | |_  _____| |__   ___| | |
+ | '_ \| \ \/ / __| '_ \ / _ \ | |
+ | |_) | |>  <\__ \ | | |  __/ | |
+ |_.__/|_/_/\_\___/_| |_|\___|_|_|
+
+EOF
+    echo -e "${NC}${BOLD}Remote Bootstrap${NC} | Log: ${BLUE}$LOG_FILE${NC}\n"
+}
+
+# ============================================================================
+# Git Check & Install
+# ============================================================================
+
+ensure_git() {
+    if command_exists git; then
+        success "git found: $(git --version)"
+        return 0
+    fi
+
+    warning "git not found on the system"
+    info "Installing git..."
+
+    command_exists pacman || die "Only Arch Linux is supported. Please install git manually"
+    sudo pacman -S --needed --noconfirm git 2>&1 | tee -a "$LOG_FILE" || die "Failed to install git via pacman"
+
+    command_exists git || die "git not found after installation attempt"
+    success "git installed: $(git --version)"
+}
+
+# ============================================================================
+# Clone or Update Repository
+# ============================================================================
+
+get_repo() {
+    if [[ -d "$REPO_DIR/.git" ]]; then
+        info "Repository already exists at $REPO_DIR"
+        info "Updating (git pull)..."
+
+        if git -C "$REPO_DIR" pull 2>&1 | tee -a "$LOG_FILE"; then
+            success "Repository updated"
+            return 0
+        else
+            warning "git pull failed"
+            warning "Removing and cloning again..."
+            rm -rf "$REPO_DIR"
+        fi
+    fi
+
+    info "Cloning $REPO_URL to $REPO_DIR..."
+    mkdir -p "$(dirname "$REPO_DIR")"
+
+    git clone "$REPO_URL" "$REPO_DIR" 2>&1 | tee -a "$LOG_FILE" || die "Failed to clone repository"
+
+    success "Repository cloned to $REPO_DIR"
+}
+
+# ============================================================================
+# Run Installer
+# ============================================================================
+
+run_installer() {
+    local installer="$REPO_DIR/install.sh"
+
+    [[ -f "$installer" ]] || die "install.sh not found in $REPO_DIR"
+
+    info "Launching installer..."
+    echo ""
+
+    bash "$installer"
+}
+
+# ============================================================================
+# Main
+# ============================================================================
+
+main() {
+    show_banner
+
+    ensure_git
+    get_repo
+    run_installer
+}
+
+main "$@"
