@@ -58,13 +58,19 @@ export default defineConfig({
 					{ label: 'AUR Publishing', slug: 'packages/aur' },
 				],
 			},
-			{
-				label: 'Troubleshooting',
-				items: [
-					{ label: 'Common Issues', slug: 'troubleshooting/common-issues' },
-					{ label: 'FAQ', slug: 'troubleshooting/faq' },
-				],
-			},
+		{
+			label: 'Troubleshooting',
+			items: [
+				{ label: 'Common Issues', slug: 'troubleshooting/common-issues' },
+				{ label: 'FAQ', slug: 'troubleshooting/faq' },
+			],
+		},
+		{
+			label: 'Changelog',
+			items: [
+				{ label: 'v2.5.0', slug: 'changelog/2.5.0' },
+			],
+		},
 		],
 		}),
 	],
