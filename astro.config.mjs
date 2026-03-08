@@ -68,7 +68,7 @@ export default defineConfig({
 		{
 			label: 'Changelog',
 			items: [
-				{ label: 'v2.5.0', slug: 'changelog/2.5.0' },
+				{ label: 'v2.5.0', slug: 'changelog/2-5-0' },
 			],
 		},
 		],
