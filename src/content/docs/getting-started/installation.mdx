@@ -98,25 +98,24 @@ cp -r .config/* ~/.config/
 Add the flake input and packages:
 
 ```nix
-# flake.nix
 {
   inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     blxshell.url = "github:binarylinuxx/dots";
   };
 
-  outputs = { blxshell, ... }: {
+  outputs = { nixpkgs, blxshell, ... }: {
     nixosConfigurations.your-host = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
       modules = [
-        {
+        ({ pkgs, ... }: {
           environment.systemPackages = with pkgs; [
-            blxshell.packages.${system}.blxshell
-            blxshell.packages.${system}.blxshell-custom-fonts
+            blxshell.packages.x86_64-linux.blxshell
+            blxshell.packages.x86_64-linux.blxshell-custom-fonts
           ];
-        }
+        })
         blxshell.nixosModules.default
-        {
-          services.blxshellMprisFixForZen.enable = true;
-        }
+        { services.blxshellMprisFixForZen.enable = true; }
       ];
     };
   };

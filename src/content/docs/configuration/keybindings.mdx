@@ -147,7 +147,7 @@ Edit `~/.config/hypr/keyboard/binds.conf`:
 
 ### Add a Keybind
 
-```conf
+```ini
 # Format: bind = MODIFIER, KEY, ACTION, COMMAND
 bind = $mainMod, B, exec, firefox
 bind = $mainMod, E, exec, thunar
@@ -158,13 +158,13 @@ bind = $mainMod SHIFT, C, exec, code
 
 Comment it out with `#`:
 
-```conf
+```ini
 # bind = $mainMod, W, exec, randwall
 ```
 
 ### Change Modifier
 
-```conf
+```ini
 # Use Alt instead of Super
 bind = ALT, Space, exec, rofi -show drun
 
@@ -183,7 +183,7 @@ bind = CTRL SHIFT, T, exec, kitty
 
 ### Bind Types
 
-```conf
+```ini
 # Normal bind (press once)
 bind = $mainMod, A, exec, command
 
@@ -204,7 +204,7 @@ bindm = $mainMod, mouse:272, movewindow
 
 For Quickshell actions:
 
-```conf
+```ini
 # Format: bind = MODIFIER, KEY, global, quickshell:ACTION
 bind = $mainMod, M, global, quickshell:YourAction
 ```
@@ -243,7 +243,7 @@ hyprctl binds
 
 Create keybinds for your most-used apps:
 
-```conf
+```ini
 bind = $mainMod, B, exec, brave
 bind = $mainMod, C, exec, code
 bind = $mainMod, D, exec, discord
@@ -253,7 +253,7 @@ bind = $mainMod, M, exec, spotify
 
 ### Window Management
 
-```conf
+```ini
 # Fullscreen
 bind = $mainMod, F, fullscreen, 0
 
@@ -270,7 +270,7 @@ bind = $mainMod, bracketright, workspace, e+1
 
 ### Resize with Keyboard
 
-```conf
+```ini
 # Enter resize mode
 bind = $mainMod, R, submap, resize
 

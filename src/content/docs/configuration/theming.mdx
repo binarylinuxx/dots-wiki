@@ -78,7 +78,7 @@ Material Design 3 provides these color roles:
 
 Colors are prefixed with `$` in Hyprland configs:
 
-```conf
+```ini
 # Example from visual/general.conf
 general {
     col.inactive_border = $on_primary
@@ -155,7 +155,7 @@ matugen color "#FF5733"
 
 Manually edit `~/.config/hypr/colors.conf`:
 
-```conf
+```ini
 # Override specific colors
 $primary = #your_color
 $surface = #your_color
@@ -225,7 +225,7 @@ PLACEHOLDER: How are terminal colors configured?
 
 Edit PLACEHOLDER: `~/.config/ghostty/config`:
 
-```conf
+```ini
 # PLACEHOLDER: Terminal color config
 ```
 
@@ -262,7 +262,7 @@ cat ~/.config/quickshell/Colors.json
 
 Create app-specific color overrides:
 
-```conf
+```ini
 # ~/.config/hypr/rules/windowrules.conf
 windowrule = bordercolor $tertiary, ^(firefox)$
 windowrule = bordercolor $secondary, ^(code)$
