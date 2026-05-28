@@ -90,6 +90,52 @@ cp -r .config/* ~/.config/
 ```
 
   </TabItem>
+  
+  <TabItem label="NixOS">
+
+### NixOS Installation
+
+Add the flake input and packages:
+
+```nix
+# flake.nix
+{
+  inputs = {
+    blxshell.url = "github:binarylinuxx/dots";
+  };
+
+  outputs = { blxshell, ... }: {
+    nixosConfigurations.your-host = nixpkgs.lib.nixosSystem {
+      modules = [
+        {
+          environment.systemPackages = with pkgs; [
+            blxshell.packages.${system}.blxshell
+            blxshell.packages.${system}.blxshell-custom-fonts
+          ];
+        }
+        blxshell.nixosModules.default
+        {
+          services.blxshellMprisFixForZen.enable = true;
+        }
+      ];
+    };
+  };
+}
+```
+
+The Nix packages provide the shell runtime, CLI wrapper, and fonts — but you still need to copy the `.config/quickshell` directory:
+
+```bash
+git clone https://github.com/binarylinuxx/dots ~/dots
+cp -r ~/dots/.config/quickshell ~/.config/quickshell
+```
+
+The `services.blxshellMprisFixForZen` option:
+- Enables `playerctld` (media player tracking)
+- Installs `plasma-browser-integration` (browser metadata)
+- Sets up native messaging host paths for Firefox/Zen browsers
+
+  </TabItem>
 </Tabs>
 
 ## Post-Installation

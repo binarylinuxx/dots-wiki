@@ -1,0 +1,51 @@
+---
+title: "v3.0.0 — 2026-05-27"
+description: Changelog for blxshell version 3.0.0
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="tip">
+  Released **2026-05-27** — update via the install script, AUR helper, or Nix flake.
+</Aside>
+
+## Added
+
+- **Hyprland Lua config tree** for Hyprland `0.55+`
+  - New `hyprland.lua` entrypoint
+  - Lua modules for monitors, variables, autostart, visuals, binds, rules, and generated colors
+- **Quickshell** now works via CLI default dir `$HOME/.local/blxshell`
+- **NixOS flake** (`github:binarylinuxx/dots`) with packages:
+  - `blxshell` — caelestia-style wrapper (`writeShellApplication` wrapping `qs -p`)
+  - `blxshell-custom-fonts` and individual font packages
+  - `blxshell-col-gen` — Python color generator as Nix environment
+  - `blxshell-plugin-manager` — compiled QML plugin
+  - `blxshell-bundle` — all packages combined
+- **NixOS module** (`nixosModules.default`) with:
+  - `services.blxshellMprisFixForZen` — single option for full MPRIS setup
+- All QML paths switched from `~/.local/blxshell` to XDG (`Quickshell.env("XDG_*_HOME")`)
+- `playerctl` and `pulseaudio` in wrapper `runtimeInputs` (available to all QML Process calls)
+- Writable paths created on first use via JsonAdapter defaults
+
+## Changed
+
+- blxshell now uses the **CLI/runtime layout** by default
+  - Runtime path: `~/.local/blxshell`
+  - CLI path: `~/.local/bin/blxshell`
+  - Installer now installs both runtime and CLI and prints a migration notice
+- Hyprland configs are now Lua-migrated
+- Quickshell config synced from the live `~/.local/blxshell` runtime and cleaned for repository use
+- Added **plugins system** (beta)
+- `restart` command uses `.quickshell-wra` process name (NixOS Qt wrapper naming)
+- Bar corners fixed for both top and bottom bar positions
+
+## Fixed
+
+- Installer no longer leaves `blxshell start` pointing at a missing runtime path
+- Plugin manager now installs into the active blxshell runtime path instead of stale `~/.config/quickshell`
+- `Invalid write to global property "removedTypes"` warning in Settings.qml
+- StyledSlider.qml deprecated signal handler parameter syntax
+
+---
+
+[← Back to Changelog](/changelog/)
