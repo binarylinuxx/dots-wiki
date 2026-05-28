@@ -122,11 +122,11 @@ Add the flake input and packages:
 }
 ```
 
-The Nix packages provide the shell runtime, CLI wrapper, and fonts — but you still need to copy the `.config/quickshell` directory:
+The Nix packages provide the shell runtime, CLI wrapper, and fonts — but they only act as a wrapper layer atop Hyprland. You still need the full dotfiles:
 
 ```bash
 git clone https://github.com/binarylinuxx/dots ~/dots
-cp -r ~/dots/.config/quickshell ~/.config/quickshell
+cp -r ~/dots/.config/* ~/.config/
 ```
 
 The <code>services.blxshellMprisFixForZen</code> option:
