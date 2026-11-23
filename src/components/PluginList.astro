@@ -1,0 +1,226 @@
+---
+// The packages in a blxshell plugin repository, fetched in the browser from
+// its list.json and each package's manifest.json, so the page follows the
+// repository without a rebuild of the wiki.
+interface Props {
+  repo?: string;    // owner/name on GitHub
+  branch?: string;
+}
+import { loadPackages, REPO } from '../lib/plugin-repo.mjs';
+
+const { repo = 'binarylinuxx/dots-plugins', branch = 'main' } = Astro.props;
+// Packages that got a page on the wiki at build time; anything merged since
+// links to its folder on GitHub until the next build.
+const pages = repo === REPO ? (await loadPackages()).map((entry) => entry.id) : [];
+---
+
+<div class="plugin-list" data-repo={repo} data-branch={branch} data-pages={pages.join(' ')}>
+  <p class="plugin-status">Loading plugins from <a href={`https://github.com/${repo}`}>{repo}</a>…</p>
+  <div class="plugin-cards"></div>
+</div>
+
+<script>
+  type Module = { id: string; name?: string; description?: string };
+  type Manifest = {
+    id: string;
+    type: 'plugin' | 'theme';
+    name: string;
+    version: string;
+    description?: string;
+    previews?: string[];
+    compositors?: string[];
+    tags?: string[];
+    plugin?: { permissions?: string[]; barModules?: Module[] };
+    colours?: { kind?: string };
+  };
+
+  const text = (tag: string, className: string, content: string) => {
+    const element = document.createElement(tag);
+    element.className = className;
+    element.textContent = content;
+    return element;
+  };
+
+  const chip = (label: string, tone = '') => text('span', `plugin-chip ${tone}`.trim(), label);
+
+  function card(manifest: Manifest, path: string, raw: string, repo: string, branch: string, pages: Set<string>) {
+    const target = pages.has(manifest.id) ? `/plugins/${manifest.id}/` : `https://github.com/${repo}/tree/${branch}/${path}`;
+    const article = document.createElement('article');
+    article.className = 'plugin-card';
+    article.id = manifest.id;
+
+    const preview = manifest.previews?.[0];
+    if (preview) {
+      const image = document.createElement('img');
+      image.className = 'plugin-preview';
+      image.src = `${raw}/${path}/${preview}`;
+      image.alt = `${manifest.name} in the bar`;
+      image.loading = 'lazy';
+      article.append(image);
+    }
+
+    const heading = document.createElement('h3');
+    heading.className = 'plugin-name';
+    const link = document.createElement('a');
+    link.href = target;
+    link.textContent = manifest.name;
+    heading.append(link, text('span', 'plugin-version', ` ${manifest.version}`));
+    article.append(heading);
+
+    if (manifest.description) article.append(text('p', 'plugin-description', manifest.description));
+
+    for (const module of manifest.plugin?.barModules ?? [])
+      if (module.description) article.append(text('p', 'plugin-usage', module.description));
+
+    const meta = document.createElement('div');
+    meta.className = 'plugin-meta';
+    meta.append(chip(manifest.type === 'theme' ? `${manifest.colours?.kind ?? ''} theme`.trim() : 'plugin'));
+    const permissions = manifest.plugin?.permissions ?? [];
+    if (manifest.type === 'plugin')
+      meta.append(chip(permissions.length ? `permissions: ${permissions.join(', ')}` : 'no permissions', permissions.length ? 'warn' : ''));
+    const compositors = manifest.compositors ?? [];
+    meta.append(chip(compositors.includes('any') ? 'any compositor' : compositors.join(', ')));
+    article.append(meta);
+
+    const footer = document.createElement('div');
+    footer.className = 'plugin-footer';
+    footer.append(text('code', 'plugin-id', manifest.id));
+    const more = document.createElement('a');
+    more.className = 'plugin-more';
+    more.href = target;
+    more.textContent = pages.has(manifest.id) ? 'Details →' : 'On GitHub →';
+    footer.append(more);
+    article.append(footer);
+    return article;
+  }
+
+  async function load(root: HTMLElement) {
+    const repo = root.dataset.repo!;
+    const branch = root.dataset.branch!;
+    const pages = new Set((root.dataset.pages ?? '').split(' ').filter(Boolean));
+    const raw = `https://raw.githubusercontent.com/${repo}/${branch}`;
+    const status = root.querySelector<HTMLElement>('.plugin-status')!;
+    const cards = root.querySelector<HTMLElement>('.plugin-cards')!;
+    try {
+      const response = await fetch(`${raw}/list.json`, { cache: 'no-cache' });
+      if (!response.ok) throw new Error(`list.json: HTTP ${response.status}`);
+      const listing = await response.json();
+      const entries: { id: string; path: string }[] = Array.isArray(listing.packages) ? listing.packages : [];
+      // Each manifest on its own: one broken package doesn't hide the rest.
+      const results = await Promise.allSettled(
+        entries.map(async (entry) => {
+          const manifest = await fetch(`${raw}/${entry.path}/manifest.json`, { cache: 'no-cache' });
+          if (!manifest.ok) throw new Error(`${entry.id}: HTTP ${manifest.status}`);
+          return { entry, manifest: (await manifest.json()) as Manifest };
+        }),
+      );
+      const loaded = results.flatMap((result) => (result.status === 'fulfilled' ? [result.value] : []));
+      const plugins = loaded.filter(({ manifest }) => manifest.type === 'plugin');
+      const themes = loaded.filter(({ manifest }) => manifest.type === 'theme');
+      for (const group of [plugins, themes]) {
+        if (!group.length) continue;
+        if (group === themes) cards.append(text('h3', 'plugin-group', 'Themes'));
+        const grid = document.createElement('div');
+        grid.className = 'plugin-grid';
+        for (const { entry, manifest } of group) grid.append(card(manifest, entry.path, raw, repo, branch, pages));
+        cards.append(grid);
+      }
+      const failed = results.length - loaded.length;
+      status.textContent = loaded.length
+        ? `${plugins.length} plugin${plugins.length === 1 ? '' : 's'}${themes.length ? ` and ${themes.length} theme${themes.length === 1 ? '' : 's'}` : ''} in ${listing.name ?? repo}` +
+          (failed ? `; ${failed} couldn't be loaded.` : '.')
+        : 'The repository lists no packages yet.';
+    } catch (error) {
+      status.textContent = '';
+      status.append(
+        `Couldn't load the plugin list (${error instanceof Error ? error.message : error}). Browse it on `,
+        Object.assign(document.createElement('a'), { href: `https://github.com/${repo}`, textContent: 'GitHub' }),
+        ' instead.',
+      );
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('.plugin-list').forEach(load);
+</script>
+
+<style is:global>
+  .plugin-list .plugin-status {
+    color: var(--sl-color-gray-2);
+  }
+  .plugin-list .plugin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .plugin-list .plugin-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 1rem;
+    background: var(--sl-color-black);
+  }
+  .plugin-list .plugin-preview {
+    /* Bar screenshots are wide strips with the module in the middle: crop to
+       the middle so it reads at card size. */
+    width: 100%;
+    height: 4.5rem;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 0.6rem;
+    background: var(--sl-color-gray-6, #000);
+  }
+  .plugin-list .plugin-card > * {
+    margin: 0;
+  }
+  .plugin-list .plugin-name {
+    font-size: var(--sl-text-lg);
+  }
+  .plugin-list .plugin-name a {
+    text-decoration: none;
+  }
+  .plugin-list .plugin-version,
+  .plugin-list .plugin-usage,
+  .plugin-list .plugin-id {
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-sm);
+    font-weight: normal;
+  }
+  .plugin-list .plugin-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: auto;
+  }
+  .plugin-list .plugin-chip {
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    background: var(--sl-color-gray-5);
+    font-size: var(--sl-text-xs);
+  }
+  .plugin-list .plugin-chip.warn {
+    background: var(--sl-color-accent-low);
+    color: var(--sl-color-accent-high);
+  }
+  .plugin-list .plugin-id {
+    background: none;
+    padding: 0;
+  }
+  .plugin-list .plugin-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .plugin-list .plugin-more {
+    font-size: var(--sl-text-sm);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .plugin-list .plugin-group {
+    margin-top: 2rem;
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+title: Commands
+description: Drive the running shell from binds and scripts
+---
+
+The running shell listens on `$XDG_RUNTIME_DIR/blxshell.sock`. `blxshell <command>`
+sends a command there, so compositor binds and scripts control the shell with it.
+
+| Command | Does |
+|---|---|
+| `blxshell` | run the shell |
+| `blxshell settings` | open the settings app |
+| `blxshell launcher [toggle\|open\|close]` | the app launcher |
+| `blxshell powermenu [toggle\|open\|close]` | the power menu |
+| `blxshell sidebar [both\|top\|bottom\|corner]` | the sidebar; `corner` grows out of the bottom-right corner |
+| `blxshell wallpapers` | the wallpaper picker |
+| `blxshell lock` | lock the session |
+| `blxshell reload` | re-read the config and colours |
+| `blxshell media play-pause\|pause\|next\|previous` | the active media player |
+| `blxshell ping` | exits 0 when a shell is running |
+| `blxshell help` | list the commands |
+
+## Binds
+
+```conf
+# Hyprland
+bind = SUPER, SPACE, exec, blxshell launcher
+bind = SUPER, L, exec, blxshell lock
+```
+
+```lua
+-- zwwm
+bind = $MOD, D, exec, "blxshell launcher"
+```
+
+## The socket
+
+One line of words in, one reply out: `ok`, `error: …`, or text such as `help`.
+Anything that speaks Unix sockets can use it:
+
+```bash
+echo "launcher toggle" | socat - UNIX-CONNECT:$XDG_RUNTIME_DIR/blxshell.sock
+```
+
+Quickshell's `ipc call <target> <function>` form is accepted too
+(`lockscreen lock`, `powermenu toggle`, `shell reload`, `mpris pauseAll`), so binds
+from the [Quickshell version](/legacy/quickshell/) keep working.

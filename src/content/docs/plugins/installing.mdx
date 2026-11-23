@@ -1,0 +1,82 @@
+---
+title: Installing plugins
+description: Getting a plugin or theme into blxshell, turning it on, and removing it
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Plugins and themes ship as `.blx` packages. The official repository builds
+every package it holds, so installing one is a single command.
+
+## From a repository
+
+```sh
+blxshell search                       # what the repositories offer
+blxshell search timer                 # …matching a word
+blxshell install dev.blxshell.pomodoro
+```
+
+`install` downloads the prebuilt package, checks it against the repository's
+checksum, shows the permissions it asks for, and installs it. Then turn it on
+in **Settings → Plugins** and place its module in the bar from the same page.
+Themes are applied with `blxshell theme apply <id>`.
+
+```sh
+blxshell update                       # newer versions of everything you installed
+blxshell update dev.blxshell.pomodoro # …or just one
+```
+
+An updated plugin that's on restarts by itself.
+
+## Custom repositories
+
+The official repository is always used first. Add others with:
+
+```sh
+blxshell repo add someone/their-plugins   # a GitHub repository
+blxshell repo add https://example.org/blxshell/index.json
+blxshell repo add ~/code/my-plugins/build # a folder on this machine
+blxshell repo list
+blxshell repo remove someone/their-plugins
+```
+
+<Aside type="caution">
+Packages from custom repositories aren't reviewed by the blxshell
+maintainers. Only add sources you trust.
+</Aside>
+
+## From a file
+
+A `.blx` you were given, or made with `blxshell pack <folder>`:
+
+```sh
+blxshell install pomodoro.blx
+```
+
+## Before you install
+
+`blxshell inspect file.blx` shows what a package is, which compositors it works
+under, and which permissions it asks for, without installing anything.
+
+Packages are checked on install: no links or special files, no paths outside
+its folder, at most 64 MiB, and every file the manifest names must be there.
+A package made for another compositor still installs, but won't run, and
+blxshell says why.
+
+## Managing them
+
+| | |
+|---|---|
+| `blxshell plugin list` | installed plugins, and whether each is on or can run here |
+| `blxshell plugin enable\|disable <id>` | the same as the switch in Settings |
+| `blxshell plugin status` | what the running shell has started, with process ids |
+| `blxshell plugin restart <id>` | restart one, e.g. after an update |
+| `blxshell theme list` / `theme reset` | installed themes; back to your own colours |
+| `blxshell remove <id>` | uninstall a plugin or theme |
+
+Installed packages live in:
+
+```text
+~/.local/share/blxshell/plugins/
+~/.local/share/blxshell/themes/
+```

@@ -1,0 +1,121 @@
+---
+title: Login screen
+description: blxshell-greeter, a greetd login screen in the lock screen's style
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+`blxshell-greeter` is a [greetd](https://sr.ht/~kennylevinsen/greetd/) greeter in the
+style of blxshell's lock screen: the stacked clock and date over your frosted wallpaper,
+and a sheet rising from the bottom with your avatar, the password field and the
+session to start. It ships with blxshell.
+
+## Using it
+
+| Key | Does |
+|---|---|
+| any key, or a click | raises the sheet |
+| Enter | logs in |
+| Up / Down, or the arrows | another user |
+| Tab, or the session chip | another session |
+| Escape | lowers the sheet |
+
+Power off and Restart sit top left. The last user and session are remembered.
+Sessions come from `wayland-sessions` in `$XDG_DATA_DIRS`.
+
+## Setting it up
+
+<Tabs>
+  <TabItem label="NixOS">
+
+The flake's module sets up greetd, a minimal zwwm to run the greeter in, the
+cursor and the fonts:
+
+```nix
+imports = [ inputs.blxshell.nixosModules.default ];
+
+programs.zwwm.enable = true;   # the greeter runs inside zwwm
+
+programs.blxshell.greeter = {
+  enable = true;
+  cursor = {
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 24;
+  };
+  fonts = [ inputs.blxshell.packages.${pkgs.system}.blxshell-custom-fonts ];
+};
+```
+
+| Option | Default | |
+|---|---|---|
+| `enable` | `false` | use blxshell-greeter as the login screen |
+| `package` | the flake's blxshell | where `blxshell-greeter` comes from |
+| `syncUser` | `null` | whose theme the login screen wears (see [Theme sync](#theme-sync)) |
+| `cursor` | `null` | `{ package, name, size }`, like home-manager's `home.pointerCursor` |
+| `fonts` | `[ ]` | Rubik, Google Sans Flex and Material Symbols Rounded |
+| `zwwmPackage` | `null` | zwwm to run in; `null` uses `programs.zwwm` |
+
+  </TabItem>
+  <TabItem label="Other distributions">
+
+Any compositor works as the greeter's host. With cage, `/etc/greetd/config.toml`:
+
+```toml
+[default_session]
+command = "cage -s -- blxshell-greeter"
+user = "greeter"
+```
+
+Under a compositor with layer shell, `blxshell-greeter --layer` draws one login per
+monitor instead of a window. Rubik, Google Sans Flex and Material Symbols Rounded must
+be installed system-wide.
+
+  </TabItem>
+</Tabs>
+
+## Theme sync
+
+greetd runs the greeter as its own `greeter` user, which can't read your home. Without
+a theme it uses blxshell's default colours. Giving it yours is **optional**.
+
+<Tabs>
+  <TabItem label="NixOS (automatic)">
+
+Set `syncUser` and the module keeps the login screen in step with that user:
+
+```nix
+programs.blxshell.greeter.syncUser = "alice";
+```
+
+Alice's blxshell config, colour scheme, wallpaper and `~/.face` are copied to
+`/var/lib/blxshell-greeter` at boot, and again whenever one of them changes (a
+systemd path unit watches them). Leave `syncUser` unset to skip it.
+
+  </TabItem>
+  <TabItem label="By hand">
+
+Copy your theme once, and again after changing it:
+
+```bash
+sudo blxshell-greeter --export /var/lib/blxshell-greeter --from ~ --user $USER
+```
+
+The greeter reads `/var/lib/blxshell-greeter` by itself; set `BLXSHELL_GREETER_DIR`
+to use another folder.
+
+  </TabItem>
+</Tabs>
+
+<Aside>
+  Only the look is copied: config, colour scheme, wallpaper and avatar. Nothing else
+  from your home is readable by the greeter.
+</Aside>
+
+## Trying it without logging out
+
+- **Preview:** run `blxshell-greeter` on its own; it shows the screen without logging
+  anyone in.
+- **fakegreet:** greetd's `fakegreet blxshell-greeter` stands in for the daemon
+  (user `user`, password `password`, then `9`).
+- **Another VT:** start greetd on a spare VT and switch to it with Ctrl+Alt+F2.

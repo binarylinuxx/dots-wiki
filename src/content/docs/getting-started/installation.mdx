@@ -1,9 +1,71 @@
 ---
 title: Installation
 description: Install blxshell on your Arch Linux system
+banner:
+  content: This page describes the Quickshell blxshell, which is no longer maintained. <a href="/legacy/quickshell/">What changed</a>
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Vellum
+
+### Arch and Arch-based
+
+The installer asks a few questions, one per screen, then builds and installs
+everything:
+
+```bash
+git clone https://github.com/binarylinuxx/dots
+cd dots
+./install.sh            # ./install.sh --demo to look around first
+```
+
+- **Packages:** blxshell, vw and the fonts, plus the extras you pick (shell and
+  terminal, audio, Hyprland). It uses yay or paru, and builds yay-bin if you have neither.
+- **Dotfiles:** copied into `~/.config`, with a backup of whatever they replace.
+- **Login screen (optional):** replaces your display manager with
+  [blxshell-greeter](/components/greeter/) under greetd and cage, from the next boot.
+  The running one is left alone.
+- **Theme sync (optional):** keep the login screen in your colours, copy them once,
+  or leave its defaults.
+
+Nothing changes until you confirm on the review screen. The log is in
+`~/.cache/blxshell-install.log`.
+
+### NixOS
+
+NixOS installs from the flake; the installer only points you here.
+
+```nix
+# flake.nix
+inputs.blxshell.url = "github:binarylinuxx/dots";
+
+# configuration.nix
+environment.systemPackages = [ inputs.blxshell.packages.${pkgs.system}.default ];
+fonts.packages = [ inputs.blxshell.packages.${pkgs.system}.blxshell-custom-fonts ];
+```
+
+From source:
+
+```bash
+git clone https://github.com/binarylinuxx/dots
+cd dots
+nix develop        # or install vw and clang yourself
+cmake -S . -B build -G Ninja
+cmake --build build
+./build/blxshell
+```
+
+## Quickshell version (unmaintained)
+
+Everything below installs the [Quickshell blxshell](/legacy/quickshell/), which is
+no longer maintained. Its install script and packages live on the
+`blxshell-qs-archive` branch.
+
+:::danger[Staying on Quickshell? Don't re-run the install script]
+The install script pulls `main`, which is now Vellum. Running it again replaces your
+Quickshell setup. To stay on Quickshell, don't re-run it.
+:::
 
 ## Prerequisites
 

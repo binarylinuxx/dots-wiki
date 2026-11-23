@@ -1,0 +1,45 @@
+---
+title: "v4.0.0 “Vellum”"
+description: blxshell rewritten in C++ on vw
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="note">
+  **Unreleased.** Vellum is on `main` of the dots repo.
+</Aside>
+
+**Vellum** is blxshell rewritten from scratch in C++ on
+[vw](https://github.com/binarylinuxx/vw), a Wayland/Vulkan widget library with its
+own renderer. No Qt, no QML. The [Quickshell version](/legacy/quickshell/) is
+archived and no longer maintained.
+
+## Added
+
+- **The shell in C++**: bar, launcher, dashboard, sidebar, notifications, lock
+  screen, wallpaper picker, settings app and Quick Share, drawn by vw with Vulkan
+- **Services without polling**: PipeWire, MPRIS, network, Bluetooth, battery,
+  brightness, tray and notifications all wake the shell on events
+- **zwwm support** (tags, fullscreen, edge swipes), with Hyprland as before
+- **`blxshell-greeter`**: a greetd login screen in the lock screen's style, one
+  login per monitor, wearing your colours, wallpaper and avatar
+- **NixOS module** `programs.blxshell.greeter`: greetd, the greeter's zwwm,
+  cursor, fonts and a service that keeps the login screen in sync with your theme
+- **Command socket**: `blxshell <command>` drives the running shell; see
+  [Commands](/configuration/commands/)
+- **zwwm config** in the dotfiles, next to the Hyprland one
+
+## Changed
+
+- `blxshell` with no arguments runs the shell (was `blxshell start`)
+- Binds use `exec, blxshell …` instead of Quickshell global shortcuts
+- Layer namespaces are `blxshell` and `blxshell-background`; the settings
+  window's app id is `blxshell-settings`
+- The flake's packages are `default` (the shell and greeter) and the font
+  packages, `blxshell-custom-fonts` among them
+
+## Removed
+
+- Quickshell, the QML runtime in `~/.local/blxshell` and `BLXSHELL_PATH`
+- The install script and the AUR and OBS packages (still on the archive branch)
+- The cheat-sheet, pie menu and overview binds, which have no Vellum counterpart yet

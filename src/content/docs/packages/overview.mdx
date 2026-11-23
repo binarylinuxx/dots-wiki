@@ -1,14 +1,93 @@
 ---
-title: Packages Overview
-description: blxshell metapackages and dependencies
+title: Packages
+description: What blxshell Vellum is built from and what it uses at runtime
 ---
 
-## Metapackages
+import { Aside } from '@astrojs/starlight/components';
 
-- `blxshell-complete` - Full installation
-- `blxshell-shell` - Terminal & shell
-- `blxshell-hyprland` - Window manager
-- `blxshell-audio` - Audio stack
-- `blxshell-fonts` - Custom fonts
+Vellum is one C++ program (plus the `blxshell-greeter` login screen) linked
+against [vw](https://github.com/binarylinuxx/vw). The metapackages around it pull in the rest of the setup.
 
-See the [arch-deps README](https://github.com/binarylinuxx/dots/tree/main/arch-deps) for details.
+## Nix flake
+
+`github:binarylinuxx/dots` provides:
+
+| Output | Contents |
+|---|---|
+| `packages.<system>.default` | `blxshell` and `blxshell-greeter`, built against vw |
+| `packages.<system>.blxshell-custom-fonts` | every font below in one package |
+| `packages.<system>.blxshell-font-googlesans` | Google Sans Flex |
+| `packages.<system>.blxshell-font-rubik` | Rubik |
+| `packages.<system>.blxshell-font-material-symbols` | Material Symbols (Outlined, Rounded, Sharp) |
+| `packages.<system>.blxshell-font-readex-pro` | Readex Pro |
+| `packages.<system>.blxshell-font-space-grotesk` | Space Grotesk |
+| `packages.<system>.blxshell-font-bitcount` | Bitcount pixel fonts |
+| `nixosModules.default` | `programs.blxshell.greeter`, the login screen |
+
+```nix
+environment.systemPackages = [ inputs.blxshell.packages.${pkgs.system}.default ];
+fonts.packages = [ inputs.blxshell.packages.${pkgs.system}.blxshell-custom-fonts ];
+```
+
+## Arch (AUR)
+
+| Package | Contents |
+|---|---|
+| `blxshell-git` | the shell and `blxshell-greeter` |
+| `vw-git` | the vw library it is built on |
+| `blxshell-fonts` | Google Sans Flex, Bitcount, Rubik, Material Symbols, Readex Pro, Space Grotesk |
+| `blxshell-shell` | fish, ghostty, starship, matugen |
+| `blxshell-audio` | PipeWire, WirePlumber, pavucontrol, cava |
+| `blxshell-hyprland` | Hyprland and its portals |
+
+```bash
+yay -S blxshell-git blxshell-shell blxshell-audio
+```
+
+## openSUSE
+
+<Aside type="danger" title="Don't use home:binarylinuxx:blxshell">
+  The OBS account behind `home:binarylinuxx:blxshell` was compromised and is no longer
+  under the author's control. Nothing published there can be trusted. If you added that
+  repository, remove it: `sudo zypper removerepo home_binarylinuxx_blxshell`.
+</Aside>
+
+openSUSE packaging is **up for adoption by the community**. The specs in
+[`opensuse-deps/`](https://github.com/binarylinuxx/dots/tree/main/opensuse-deps)
+are updated for Vellum but unmaintained and never built on OBS. If you publish
+them from your own OBS project, open an issue and this page will point to it.
+
+## Building from source
+
+- **vw**, with its own dependencies (Vulkan, Wayland, HarfBuzz, FreeType,
+  Fontconfig, Cairo, librsvg, libwebp, PipeWire, PAM and others).
+  `nix develop` in the repo brings all of it.
+- **clang** with C++23, **CMake** 3.25+, **Ninja**, and **glslc** for the shaders
+
+```bash
+cmake -S . -B build -G Ninja
+cmake --build build
+```
+
+## At runtime
+
+Every module hides itself when its service is missing, so none of these is
+strictly required.
+
+| Used for | Needs |
+|---|---|
+| Fonts | Google Sans Flex, Rubik, Material Symbols Rounded |
+| Volume | PipeWire |
+| Media | any MPRIS player |
+| Network, Bluetooth, battery | NetworkManager, BlueZ, UPower |
+| Wallpaper colours | matugen |
+| Screen recorder | gpu-screen-recorder |
+| Power menu, keep awake | systemd-logind |
+| Workspaces | zwwm or Hyprland |
+| Login screen | greetd |
+
+<Aside>
+  `blxshell-quickshell-git` and the Quickshell versions of these metapackages are on the
+  [`blxshell-qs-archive`](https://github.com/binarylinuxx/dots/tree/blxshell-qs-archive/arch-deps)
+  branch and [no longer maintained](/legacy/quickshell/).
+</Aside>

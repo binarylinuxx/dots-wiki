@@ -1,0 +1,188 @@
+---
+// One page per package in the official repository, built from its
+// manifest.json (and README.md, when it has one).
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { Aside } from '@astrojs/starlight/components';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import { loadPackages, RAW, TREE } from '../../lib/plugin-repo.mjs';
+
+export async function getStaticPaths() {
+  const packages = await loadPackages();
+  return packages.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { manifest, path } = entry;
+const plugin = manifest.plugin ?? {};
+const isPlugin = manifest.type === 'plugin';
+const modules = plugin.barModules ?? [];
+const settings = plugin.settings ?? [];
+const commands = plugin.commands ?? [];
+const permissions = plugin.permissions ?? [];
+const compositors = manifest.compositors ?? [];
+const authors = (manifest.authors ?? []).map((author) => (typeof author === 'string' ? { name: author } : author));
+const previews = manifest.previews ?? [];
+
+// What each permission lets a plugin do, in the words users need.
+const meaning = {
+  shell: 'Runs blxshell commands: opens panels, the launcher or the dashboard, locks the screen. Enforced by blxshell.',
+  notifications: 'Shows desktop notifications. Enforced by blxshell.',
+  network: 'Talks to the network.',
+  filesystem: 'Reads or writes files outside its own folder.',
+  spawn: 'Starts other programs.',
+};
+
+const shown = (value) => (value === undefined || value === '' ? '—' : typeof value === 'string' ? value : JSON.stringify(value));
+
+let readme = null;
+if (entry.readme) {
+  const processor = await createMarkdownProcessor();
+  readme = (await processor.render(entry.readme)).code;
+}
+
+const headings = [
+  { depth: 2, slug: 'about', text: 'About' },
+  ...(modules.length ? [{ depth: 2, slug: 'using-it', text: 'Using it' }] : []),
+  ...(settings.length ? [{ depth: 2, slug: 'settings', text: 'Settings' }] : []),
+  ...(commands.length ? [{ depth: 2, slug: 'keybinds', text: 'Keybinds' }] : []),
+  ...(isPlugin ? [{ depth: 2, slug: 'permissions', text: 'Permissions' }] : []),
+  { depth: 2, slug: 'install', text: 'Install' },
+  ...(readme ? [{ depth: 2, slug: 'readme', text: 'More' }] : []),
+];
+---
+
+<StarlightPage frontmatter={{ title: manifest.name, description: manifest.description }} headings={headings}>
+  {previews.map((preview) => (
+    <img class="plugin-hero" src={`${RAW}/${path}/${preview}`} alt={`${manifest.name} in the bar`} />
+  ))}
+
+  <h2 id="about">About</h2>
+  {manifest.description && <p>{manifest.description}</p>}
+  <table>
+    <tbody>
+      <tr><th>Id</th><td><code>{manifest.id}</code></td></tr>
+      <tr><th>Version</th><td>{manifest.version}</td></tr>
+      <tr><th>Type</th><td>{isPlugin ? 'Plugin' : `${manifest.colours?.kind ?? ''} theme`}</td></tr>
+      <tr><th>Works under</th><td>{compositors.includes('any') ? 'any compositor' : compositors.join(', ')}</td></tr>
+      {manifest.blxshell && <tr><th>blxshell</th><td><code>{manifest.blxshell}</code></td></tr>}
+      {authors.length > 0 && (
+        <tr><th>By</th><td>{authors.map((author, index) => (
+          <>{index > 0 && ', '}{author.url ? <a href={author.url}>{author.name}</a> : author.name}</>
+        ))}</td></tr>
+      )}
+      {manifest.license && <tr><th>License</th><td>{manifest.license}</td></tr>}
+      <tr><th>Source</th><td><a href={`${TREE}/${path}`}>{path}</a></td></tr>
+    </tbody>
+  </table>
+
+  {modules.length > 0 && (
+    <>
+      <h2 id="using-it">Using it</h2>
+      <p>
+        Turn it on in <strong>Settings → Plugins</strong>, then place
+        {modules.length === 1 ? ' its module ' : ' its modules '}
+        in the bar from the same page, or add the id to <code>bar.left</code>,
+        <code>bar.center</code> or <code>bar.right</code> in <code>config.json</code>.
+      </p>
+      <table>
+        <thead><tr><th>Bar module</th><th>Id</th><th>Controls</th></tr></thead>
+        <tbody>
+          {modules.map((module) => (
+            <tr>
+              <td>{module.name ?? module.id}</td>
+              <td><code>{manifest.id}:{module.id}</code></td>
+              <td>{module.description ?? '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )}
+
+  {settings.length > 0 && (
+    <>
+      <h2 id="settings">Settings</h2>
+      <p>
+        In <strong>Settings → Plugins</strong> while it's on, or under
+        <code>plugins.settings."{manifest.id}"</code> in <code>config.json</code>.
+        Changes reach the running plugin straight away.
+      </p>
+      <table>
+        <thead><tr><th>Setting</th><th>Key</th><th>Type</th><th>Default</th></tr></thead>
+        <tbody>
+          {settings.map((setting) => (
+            <tr>
+              <td>
+                {setting.label ?? setting.key}
+                {setting.description && <><br /><small>{setting.description}</small></>}
+              </td>
+              <td><code>{setting.key}</code></td>
+              <td>{setting.type === 'choice' ? (setting.choices ?? []).join(' / ') : setting.type}</td>
+              <td><code>{shown(setting.default)}</code></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )}
+
+  {commands.length > 0 && (
+    <>
+      <h2 id="keybinds">Keybinds</h2>
+      <p>It takes these commands, so you can drive it from compositor binds:</p>
+      <pre><code>{commands.map((command) => `blxshell plugin call ${manifest.id} ${command}`).join('\n')}</code></pre>
+    </>
+  )}
+
+  {isPlugin && (
+    <>
+      <h2 id="permissions">Permissions</h2>
+      {permissions.length === 0 ? (
+        <p>None: it only shows its module and reacts to clicks.</p>
+      ) : (
+        <ul>
+          {permissions.map((permission) => (
+            <li><code>{permission}</code>: {meaning[permission] ?? 'An unknown permission.'}</li>
+          ))}
+        </ul>
+      )}
+      <Aside type="note">
+        A plugin runs as you, like any program you start. Permissions limit what
+        it may ask blxshell to do and say what it does; they aren't a sandbox.
+        Everything in the official pool is reviewed before it's merged.
+      </Aside>
+    </>
+  )}
+
+  <h2 id="install">Install</h2>
+  <pre><code>{`blxshell install ${manifest.id}`}</code></pre>
+  <p>
+    {isPlugin ? (
+      <>Then turn it on in <strong>Settings → Plugins</strong>, or with <code>blxshell plugin enable {manifest.id}</code>.</>
+    ) : (
+      <>Then apply it with <code>blxshell theme apply {manifest.id}</code>.</>
+    )}
+    {' '}<code>blxshell update</code> keeps it current. More in <a href="/plugins/installing/">Installing</a>.
+  </p>
+
+  {readme && (
+    <>
+      <h2 id="readme">More</h2>
+      <Fragment set:html={readme} />
+    </>
+  )}
+</StarlightPage>
+
+<style>
+  .plugin-hero {
+    display: block;
+    width: 100%;
+    max-width: 40rem;
+    margin-inline: auto;
+    border-radius: 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+  }
+  th {
+    white-space: nowrap;
+  }
+</style>

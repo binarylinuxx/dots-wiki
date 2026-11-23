@@ -1,0 +1,64 @@
+---
+title: Quickshell blxshell (unmaintained)
+description: The original QML blxshell is archived and no longer maintained
+banner:
+  content: The Quickshell blxshell is no longer maintained. <a href="/changelog/4-0-0/">Vellum</a> replaces it.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="caution" title="No longer maintained">
+  The Quickshell (QML) blxshell, versions up to **v3.0.0**, gets no more fixes or features.
+  It stays available, unchanged, for anyone who still runs it.
+</Aside>
+
+blxshell now runs on **Vellum**, a rewrite in C++ on [vw](https://github.com/binarylinuxx/vw),
+its own Wayland/Vulkan library: no Qt, no QML. See the [v4.0.0 changelog](/changelog/4-0-0/).
+
+<Aside type="danger" title="Staying on Quickshell? Don't re-run the install script">
+  The install script (and `curl … get_remote | bash`) pulls the `main` branch, which is now Vellum.
+  Running it again replaces your Quickshell setup. To stay on Quickshell, don't re-run it: update
+  from the `blxshell-qs-archive` branch by hand instead.
+</Aside>
+
+<Aside type="danger" title="openSUSE: don't use the old OBS repository">
+  The archived install script adds `home:binarylinuxx:blxshell` from OBS on openSUSE. That
+  account was compromised and is not under the author's control, so don't run the script
+  on openSUSE, and remove the repository if you added it:
+  `sudo zypper removerepo home_binarylinuxx_blxshell`.
+</Aside>
+
+## Where it lives
+
+The last Quickshell version is the
+[`blxshell-qs-archive`](https://github.com/binarylinuxx/dots/tree/blxshell-qs-archive)
+branch of the dots repo. `main` is Vellum.
+
+```bash
+git clone -b blxshell-qs-archive https://github.com/binarylinuxx/dots
+```
+
+On NixOS, pin the flake to the branch:
+
+```nix
+blxshell.url = "github:binarylinuxx/dots/blxshell-qs-archive";
+```
+
+The install script, the AUR and OBS packages and the `blxshell-quickshell-git`
+build all belong to that branch.
+
+## Moving to Vellum
+
+Old binds keep working: Vellum's `blxshell` command understands Quickshell's
+`ipc call` form.
+
+| Quickshell | Vellum |
+|---|---|
+| `blxshell start` | `blxshell` |
+| `qs … ipc call lockscreen lock` | `blxshell lock` |
+| `qs … ipc call powermenu toggle` | `blxshell powermenu` |
+| `qs … ipc call shell reload` | `blxshell reload` |
+| `global, quickshell:LauncherToggle` | `exec, blxshell launcher` |
+| `global, quickshell:SettingsToggle` | `exec, blxshell settings` |
+
+See [Commands](/configuration/commands/) for the full list.

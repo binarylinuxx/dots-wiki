@@ -1,0 +1,127 @@
+---
+title: Publishing plugins
+description: Getting a plugin or theme into the official pool, and running your own repository
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Plugins and themes are found in **repositories**: GitHub repos with a
+`list.json` at their root that points to one folder per package.
+
+## The official pool
+
+[binarylinuxx/dots-plugins](https://github.com/binarylinuxx/dots-plugins) is
+the default source, and the only one blxshell trusts out of the box. Nothing
+lands in it without review:
+
+<Steps>
+
+1. Fork it, add your package's folder under `plugins/` or `themes/` (named
+   after its id), and add it to `list.json`. Plugins need a `screenshot.png` of
+   their module in the bar, listed in `previews`.
+
+2. Check it, and pack it once to be sure blxshell reads it:
+
+   ```sh
+   python3 tools/validate.py
+   blxshell pack plugins/io.github.you.weather
+   ```
+
+3. Open a pull request. The same checks run on it automatically.
+
+4. Maintainers review it: the manifest, the permissions it asks for, and the
+   plugin's code.
+
+5. Once merged, the repository builds it, so `blxshell install <id>` gets it
+   prebuilt. It shows up on [Browse](/plugins/discover/) straight away, and
+   gets its own page here with the next wiki build.
+
+</Steps>
+
+Updates go through the same review: a pull request that changes the folder and
+bumps `version` in its manifest.
+
+### What reviewers look at
+
+- **Permissions**: it asks only for what it uses. `shell` and `notifications`
+  are enforced by blxshell; the rest are declarations users rely on, so they
+  must be truthful.
+- **The code**: a plugin runs as the user. No obfuscated or minified code, no
+  downloading and running code at runtime, no network access unless declared
+  and needed.
+- **Behaviour**: it exits when its input closes, doesn't keep the CPU busy, and
+  survives a missing sensor, file or connection.
+- **Compositors**: `"any"` only if it really works everywhere.
+
+## Custom repositories
+
+You can add other repositories too, such as a friend's collection, your own
+experiments, or a team's internal plugins. A custom repository has the same layout
+as the official one. Packages from custom repositories are **not reviewed** by
+the blxshell maintainers, so only add sources you trust.
+
+## Repository layout
+
+```text
+my-plugins/                      a GitHub repository
+├── list.json                    what the repository offers
+├── plugins/
+│   └── io.github.you.cpu/       one folder per package
+│       ├── manifest.json
+│       ├── screenshot.png
+│       ├── README.md            optional: shown on the package's page
+│       └── bin/cpu.py
+└── themes/
+    └── io.github.you.forest/
+        └── manifest.json
+```
+
+Each folder holds what a `.blx` package holds: a `manifest.json` at its root
+and the files it names. `blxshell pack <folder>` checks a folder and turns it
+into a `.blx`.
+
+## Prebuilt packages
+
+blxshell installs from a repository's **index.json**, not from its folders.
+The official repository makes it in CI: on every push to `main`,
+`tools/build.py` packs each package into a `.blx` and writes `index.json` with
+each file's version, download URL, SHA-256 and size, and the workflow publishes
+them all to a release called `packages`. For a GitHub repository `owner/name`,
+blxshell reads
+
+```text
+https://github.com/owner/name/releases/download/packages/index.json
+```
+
+A custom repository can copy `tools/build.py` and `.github/workflows/release.yml`
+from the official one to work the same way, or publish an `index.json` and the
+files anywhere over HTTPS and be added by URL.
+
+## list.json
+
+`list.json` is the repository's source list: what `tools/validate.py` checks,
+what `tools/build.py` builds into `index.json`, and what this wiki reads.
+
+```json
+{
+  "schema": 1,
+  "name": "My plugins",
+  "packages": [
+    { "id": "io.github.you.cpu", "path": "plugins/io.github.you.cpu" },
+    { "id": "io.github.you.forest", "path": "themes/io.github.you.forest" }
+  ]
+}
+```
+
+| Key | |
+|---|---|
+| `schema` | list format version, `1` |
+| `name` | what blxshell shows for this repository |
+| `packages[].id` | the package id; must match the `id` in its manifest |
+| `packages[].path` | the package's folder, relative to the repository root |
+
+Everything else, such as name, version, description, compositors, permissions and
+settings, comes from each package's own `manifest.json`, so it's written only
+once. The manifest format and the plugin protocol are documented in the
+blxshell repository, in
+[docs/packages.md](https://github.com/binarylinuxx/dots/blob/main/docs/packages.md).
