@@ -1,81 +1,66 @@
 ---
 title: blxshell
-description: blxshell Vellum, a Material You desktop shell in C++ on vw
+description: A Wayland desktop shell in C++ with its own Vulkan renderer, for zwwm, Hyprland and Halley
 template: splash
-hero:
-  tagline: "Vellum: blxshell rewritten in C++ on vw. A Material You desktop shell with its own Vulkan renderer, for zwwm and Hyprland. No Qt, no QML."
-  image:
-    file: ../../assets/vellum-media.webp
-  actions:
-    - text: Get Started
-      link: /getting-started/installation/
-      icon: rocket
-      variant: primary
-    - text: View on GitHub
-      link: https://github.com/binarylinuxx/dots
-      icon: github
-      variant: minimal
+pagefind: false
+next: false
+prev: false
 ---
 
-import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+<div class="home">
 
-<Aside type="caution" title="The Quickshell version is no longer maintained">
-  blxshell up to v3.0.0 was built on Quickshell. It is archived on the
-  [`blxshell-qs-archive`](https://github.com/binarylinuxx/dots/tree/blxshell-qs-archive)
-  branch and gets no more updates. [Read what changed](/legacy/quickshell/).
-</Aside>
-
-## Preview
-
-Older versions are in the [version history](/history/overview/).
-
-<div class="showcase-carousel" id="showcase">
-	<button class="showcase-arrow showcase-prev" onclick="showcaseGo(-1)">&#8249;</button>
-	<button class="showcase-arrow showcase-next" onclick="showcaseGo(1)">&#8250;</button>
-	<div class="showcase-track" id="showcase-track">
-		<div class="showcase-slide">
-			<img src="/history/2026-11-vellum-media.webp" alt="blxshell Vellum: the media dashboard" />
-		</div>
-		<div class="showcase-slide">
-			<img src="/history/2026-11-vellum-settings.webp" alt="blxshell Vellum: settings and the sidebar" />
-		</div>
+<section class="home-intro">
+	<p class="home-kicker">Wayland desktop shell · v4 Vellum</p>
+	<h1 class="home-title">blxshell</h1>
+	<p class="home-lede">
+		A bar, launcher, dashboard, sidebar, notifications, lock screen and
+		login screen in one C++ program with its own Vulkan renderer. Runs on
+		zwwm, Hyprland and Halley. No Qt, no QML, no GTK.
+	</p>
+	<div class="home-install">
+		<code>{'git clone https://github.com/binarylinuxx/dots'}</code>
+		<code>{'cd dots && ./install.sh'}</code>
 	</div>
-	<div class="showcase-nav">
-		<div class="showcase-dots">
-			<div class="showcase-dot active" onclick="showcaseSet(0)"></div>
-			<div class="showcase-dot" onclick="showcaseSet(1)"></div>
-		</div>
-	</div>
+	<p class="home-links">
+		<a href="/getting-started/installation/">Install guide</a>
+		<a href="/plugins/discover/">Plugins</a>
+		<a href="https://github.com/binarylinuxx/dots">Source on GitHub</a>
+	</p>
+</section>
+
+<figure class="home-shot">
+	<img src="/history/2026-11-vellum-media.webp" alt="blxshell with the dashboard open on its media page" width="1920" height="1080" />
+	<figcaption>The dashboard's media page, hanging from the top edge of the frame.</figcaption>
+</figure>
+
+<section class="home-parts">
+	<h2>What's in it</h2>
+	<dl>
+		<div><dt><a href="/components/bar/">Bar</a></dt><dd>Workspaces, window title, tray, clock and status, with plugin modules where you want them.</dd></div>
+		<div><dt><a href="/components/launcher/">Launcher</a></dt><dd>Apps, favourites and usage ranking; doubles as the wallpaper picker.</dd></div>
+		<div><dt><a href="/components/notifications/">Notifications</a></dt><dd>Popups and a sidebar history, pulled out of the screen corner.</dd></div>
+		<div><dt><a href="/components/settings/">Settings</a></dt><dd>A separate app that edits the config; the shell follows every change live.</dd></div>
+		<div><dt><a href="/components/wallpapers/">Wallpapers</a></dt><dd>Colours generated from the wallpaper with matugen, or fixed themes.</dd></div>
+		<div><dt><a href="/components/greeter/">Login screen</a></dt><dd>A greetd greeter in the lock screen's style, with your colours.</dd></div>
+	</dl>
+</section>
+
+<figure class="home-shot">
+	<img src="/history/2026-11-vellum-settings.webp" alt="blxshell settings app next to the open sidebar" width="1920" height="1080" />
+	<figcaption>Settings and the sidebar's quick toggles, recorder and media card.</figcaption>
+</figure>
+
+<section class="home-facts">
+	<div><strong>One surface</strong><span>Frame, bar and panels are a single signed-distance shape, so panels melt out of the edges instead of sliding over them.</span></div>
+	<div><strong>Plugins</strong><span>Bar modules and desktop icons in any language, over JSON lines. <a href="/plugins/discover/">Browse them</a>.</span></div>
+	<div><strong>Small</strong><span>About 16,700 lines of C++ and GLSL, on <a href="https://github.com/binarylinuxx/vw">vw</a>.</span></div>
+</section>
+
+<p class="home-note">
+	Up to v3.0.0 blxshell was built on Quickshell. That version is archived on the
+	<a href="https://github.com/binarylinuxx/dots/tree/blxshell-qs-archive"><code>blxshell-qs-archive</code></a>
+	branch and no longer updated. <a href="/legacy/quickshell/">What changed</a> ·
+	<a href="/history/overview/">Older versions</a>
+</p>
+
 </div>
-
-<script>{`
-	var showcaseIdx = 0;
-	var showcaseTotal = 2;
-	function showcaseSet(i) {
-		showcaseIdx = i;
-		document.getElementById('showcase-track').style.transform = 'translateX(-' + (i * 50) + '%)';
-		document.querySelectorAll('.showcase-dot').forEach(function(d, j) {
-			d.classList.toggle('active', j === i);
-		});
-	}
-	function showcaseGo(dir) {
-		var next = showcaseIdx + dir;
-		if (next < 0) next = showcaseTotal - 1;
-		if (next >= showcaseTotal) next = 0;
-		showcaseSet(next);
-	}
-`}</script>
-
-## What's Included
-
-- **blxshell Vellum** - The shell, in C++ on [vw](https://github.com/binarylinuxx/vw)
-- **blxshell-greeter** - A greetd login screen in the lock screen's style
-- **zwwm** or **Hyprland** - Wayland compositor
-- **Matugen** - Material Design 3 color generation
-- **Fish Shell** - Modern, user-friendly shell
-- **Starship** - Fast, customizable prompt
-- **Ghostty** - GPU-accelerated terminal emulator
-
-
-
-

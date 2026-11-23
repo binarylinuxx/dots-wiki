@@ -1,75 +1,75 @@
 /* ============================================================================
- * blxshell Material Design 3 Theme
- * Palette generated from Material You (purple/violet)
+ * blxshell wiki
+ *
+ * Colours come from the shell itself (its green, on near-black), and so do
+ * the fonts: Rubik for headings, Google Sans Flex for text.
+ *
+ * Starlight's scale: --sl-color-white is the strongest text, --sl-color-black
+ * the page, gray-1..6 in between (light to dark in dark mode).
  * ============================================================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500..800&family=Google+Sans+Flex:opsz,wght@6..144,300..700&family=JetBrains+Mono:wght@400..600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
-/* ============================================================================
- * Dark Theme (default)
- *
- * Starlight uses --sl-color-white as the BRIGHTEST text/icon color
- * and --sl-color-black as the DARKEST background. The gray scale
- * must go from light (gray-1) to dark (gray-6) for dark mode.
- *
- * Mapped from Material You surface palette:
- *   white       = onSurface        #e9e0e7
- *   gray-1      = onSurfaceVariant #cec3ce
- *   gray-2      = outline          #978e97
- *   gray-3      = outlineVariant   #4c444d
- *   gray-4      = surfaceContainerHigh #2d282e
- *   gray-5      = surfaceContainer #221e24
- *   gray-6      = surfaceDim       #161217
- *   black       = surfaceContainerLowest #110d12
- * ============================================================================ */
-
 :root {
-	--sl-color-white: #e9e0e7;
-	--sl-color-gray-1: #cec3ce;
-	--sl-color-gray-2: #978e97;
-	--sl-color-gray-3: #4c444d;
-	--sl-color-gray-4: #2d282e;
-	--sl-color-gray-5: #221e24;
-	--sl-color-gray-6: #161217;
-	--sl-color-black: #110d12;
+	--sl-color-white: #e4e6dd;
+	--sl-color-gray-1: #c3c8bb;
+	--sl-color-gray-2: #8d9286;
+	--sl-color-gray-3: #43483e;
+	--sl-color-gray-4: #282b25;
+	--sl-color-gray-5: #1b1e19;
+	--sl-color-gray-6: #131611;
+	--sl-color-black: #0d0f0c;
 
-	/* Primary accent - purple */
-	--sl-color-accent-low: #5b396c;
-	--sl-color-accent: #e2b7f4;
-	--sl-color-accent-high: #f6d9ff;
-	--sl-color-text-accent: #e2b7f4;
+	--sl-color-accent-low: #253b18;
+	--sl-color-accent: #a8d08d;
+	--sl-color-accent-high: #d4f0bf;
+	--sl-color-text-accent: #b5dc9a;
 }
 
-/* Light theme override */
 [data-theme='light'] {
-	--sl-color-white: #1e1a1f;
-	--sl-color-gray-1: #2d282e;
-	--sl-color-gray-2: #4c444d;
-	--sl-color-gray-3: #978e97;
-	--sl-color-gray-4: #cec3ce;
-	--sl-color-gray-5: #e9e0e7;
-	--sl-color-gray-6: #f6d9ff;
-	--sl-color-black: #ffffff;
+	--sl-color-white: #1a1c16;
+	--sl-color-gray-1: #2a2d26;
+	--sl-color-gray-2: #4c5046;
+	--sl-color-gray-3: #8d9286;
+	--sl-color-gray-4: #c5c8ba;
+	--sl-color-gray-5: #e5e7db;
+	--sl-color-gray-6: #f0f2e7;
+	--sl-color-black: #f9faf3;
 
-	--sl-color-accent-low: #f6d9ff;
-	--sl-color-accent: #755086;
-	--sl-color-accent-high: #432254;
-	--sl-color-text-accent: #5b396c;
+	--sl-color-accent-low: #d6eebf;
+	--sl-color-accent: #4c662b;
+	--sl-color-accent-high: #233610;
+	--sl-color-text-accent: #3e5a1f;
 }
 
 /* ============================================================================
- * Typography
+ * Type
  * ============================================================================ */
 
 :root {
-	--sl-font: 'Inter', 'Rubik', system-ui, -apple-system, sans-serif;
-	--sl-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-	--sl-text-h1: 2.5rem;
-	--sl-text-h2: 2rem;
-	--sl-text-h3: 1.5rem;
-	--sl-text-h4: 1.25rem;
-	--sl-text-h5: 1.125rem;
-	--sl-line-height-headings: 1.3;
+	--sl-font: 'Google Sans Flex', system-ui, sans-serif;
+	--sl-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+	--sl-text-h1: 2.6rem;
+	--sl-text-h2: 1.75rem;
+	--sl-text-h3: 1.3rem;
+	--sl-text-h4: 1.1rem;
+	--sl-text-h5: 1rem;
+	--sl-line-height-headings: 1.2;
+}
+
+h1, h2, h3, h4, h5,
+.sl-markdown-content :is(h1, h2, h3, h4, h5),
+.site-title,
+[data-page-title] {
+	font-family: 'Rubik', var(--sl-font);
+	letter-spacing: -0.015em;
+}
+h1, [data-page-title] {
+	font-weight: 700;
+}
+.sl-markdown-content :is(h2, h3) {
+	font-weight: 600;
 }
 
 /* ============================================================================
@@ -126,15 +126,15 @@ pre {
 /* ============================================================================
  * Accent utilities
  *
- * primary    = #e2b7f4
- * secondary  = #d4c0d8
- * tertiary   = #f5b7b6
+ * primary    = var(--sl-color-accent)
+ * secondary  = var(--sl-color-gray-1)
+ * tertiary   = #e8b86a
  * error      = #ffb4ab
  * ============================================================================ */
 
-.accent-primary   { color: #e2b7f4; }
-.accent-secondary { color: #d4c0d8; }
-.accent-tertiary  { color: #f5b7b6; }
+.accent-primary   { color: var(--sl-color-text-accent); }
+.accent-secondary { color: var(--sl-color-gray-1); }
+.accent-tertiary  { color: #e8b86a; }
 .accent-error     { color: #ffb4ab; }
 
 /* ============================================================================
@@ -172,28 +172,17 @@ pre {
 	border-left: 4px solid;
 }
 
-.callout-info    { background: rgba(226, 183, 244, 0.08); border-color: #e2b7f4; }
-.callout-warning { background: rgba(245, 183, 182, 0.08); border-color: #f5b7b6; }
+.callout-info    { background: color-mix(in srgb, var(--sl-color-accent) 8%, transparent); border-color: var(--sl-color-accent); }
+.callout-warning { background: color-mix(in srgb, #e8b86a 8%, transparent); border-color: #e8b86a; }
 .callout-error   { background: rgba(255, 180, 171, 0.08); border-color: #ffb4ab; }
-.callout-success { background: rgba(212, 192, 216, 0.08); border-color: #d4c0d8; }
+.callout-success { background: color-mix(in srgb, var(--sl-color-accent) 8%, transparent); border-color: var(--sl-color-gray-1); }
 
 /* ============================================================================
- * Images -- neon glow on hover
+ * Images
  * ============================================================================ */
 
-img {
+.sl-markdown-content img {
 	border-radius: 12px;
-	border: 2px solid transparent;
-	transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-img:hover {
-	border-color: #e2b7f4;
-	box-shadow:
-		0 0 10px rgba(226, 183, 244, 0.4),
-		0 0 30px rgba(226, 183, 244, 0.2),
-		0 0 60px rgba(226, 183, 244, 0.1);
-	transform: scale(1.01);
 }
 
 /* ============================================================================
@@ -214,7 +203,7 @@ img:hover {
 }
 
 .showcase-carousel:hover {
-	border-color: #e2b7f4;
+	border-color: var(--sl-color-accent);
 	box-shadow:
 		0 0 10px rgba(226, 183, 244, 0.4),
 		0 0 30px rgba(226, 183, 244, 0.2),
@@ -266,7 +255,7 @@ img:hover {
 	border-radius: 50%;
 	border: none;
 	background: rgba(34, 30, 36, 0.8);
-	color: #e2b7f4;
+	color: var(--sl-color-accent);
 	font-size: 24px;
 	line-height: 1;
 	cursor: pointer;
@@ -332,7 +321,7 @@ img:hover {
 }
 
 .showcase-dot.active {
-	background: #e2b7f4;
+	background: var(--sl-color-accent);
 	transform: scale(1.2);
 	box-shadow: 0 0 8px rgba(226, 183, 244, 0.6);
 }
@@ -353,4 +342,283 @@ img:hover {
 		--sl-text-h2: 1.75rem;
 		--sl-text-h3: 1.5rem;
 	}
+}
+
+/* ============================================================================
+ * Home page
+ * ============================================================================ */
+
+.home {
+	--home-measure: 40rem;
+	max-width: 68rem;
+	margin-inline: auto;
+}
+.home > * + * {
+	margin-top: 0;
+}
+.home a {
+	color: var(--sl-color-text-accent);
+	text-decoration-color: color-mix(in srgb, var(--sl-color-text-accent) 40%, transparent);
+	text-underline-offset: 0.2em;
+}
+.home a:hover {
+	text-decoration-color: currentColor;
+}
+
+.home-intro {
+	padding-block: 3.5rem 2.5rem;
+	max-width: var(--home-measure);
+}
+.home-kicker {
+	margin: 0;
+	color: var(--sl-color-gray-2);
+	font-size: var(--sl-text-sm);
+	letter-spacing: 0.02em;
+}
+.sl-markdown-content .home-title {
+	margin: 0.4rem 0 0;
+	font-size: clamp(3rem, 8vw, 5rem);
+	font-weight: 800;
+	letter-spacing: -0.035em;
+	line-height: 1;
+	color: var(--sl-color-white);
+}
+.home-lede {
+	margin-top: 1.25rem;
+	font-size: 1.2rem;
+	line-height: 1.55;
+	color: var(--sl-color-gray-1);
+}
+.home-install {
+	margin-top: 1.75rem;
+	padding: 0.85rem 1rem;
+	border: 1px solid var(--sl-color-gray-4);
+	border-radius: 10px;
+	background: var(--sl-color-gray-6);
+	overflow-x: auto;
+}
+.home-install code {
+	padding: 0;
+	background: none;
+	font-size: 0.9rem;
+	white-space: nowrap;
+	color: var(--sl-color-white);
+}
+.home-install code::before {
+	content: '$ ';
+	color: var(--sl-color-gray-2);
+}
+.home-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem 1.5rem;
+	margin-top: 1.1rem;
+}
+
+.home-shot {
+	margin: 1.5rem 0 3.5rem;
+}
+.home-shot img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 14px;
+	border: 1px solid var(--sl-color-gray-4);
+}
+.home-shot figcaption {
+	margin-top: 0.7rem;
+	color: var(--sl-color-gray-2);
+	font-size: var(--sl-text-sm);
+}
+
+.home-parts h2 {
+	margin: 0 0 1rem;
+	font-size: 1.4rem;
+}
+.home-parts dl {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+	gap: 0 2.5rem;
+	margin: 0 0 3rem;
+}
+.home-parts dl > div {
+	padding: 1rem 0;
+	border-top: 1px solid var(--sl-color-gray-4);
+}
+.home-parts dt {
+	font-family: 'Rubik', var(--sl-font);
+	font-weight: 600;
+	font-size: 1.05rem;
+}
+.home-parts dt a {
+	color: var(--sl-color-white);
+	text-decoration: none;
+}
+.home-parts dt a:hover {
+	color: var(--sl-color-text-accent);
+}
+.home-parts dd {
+	margin: 0.3rem 0 0;
+	color: var(--sl-color-gray-1);
+	line-height: 1.5;
+}
+
+.home-facts {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+	gap: 1.5rem 2.5rem;
+	padding-block: 0.5rem 3rem;
+}
+.home-facts div {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+	margin: 0;
+}
+.home-facts strong {
+	font-family: 'Rubik', var(--sl-font);
+	font-weight: 600;
+	color: var(--sl-color-white);
+}
+.home-facts span {
+	color: var(--sl-color-gray-1);
+	line-height: 1.5;
+}
+
+.home-note {
+	padding-top: 1.25rem;
+	border-top: 1px solid var(--sl-color-gray-4);
+	color: var(--sl-color-gray-2);
+	font-size: var(--sl-text-sm);
+}
+
+/* The home page brings its own title: drop Starlight's. */
+.main-pane .content-panel:has(h1#_top):has(~ .content-panel .home) {
+	display: none;
+}
+.main-pane .content-panel:has(.home) {
+	border-top: none;
+}
+/* Starlight spaces every block in a page; the home page spaces its own. */
+.home :is(div, dl, dt, dd, span, strong, code, figure, figcaption, section, p) {
+	margin-top: 0;
+}
+.home-install {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+}
+.home-parts dd {
+	margin-inline-start: 0;
+}
+.home .home-lede { margin-top: 1.25rem; }
+.home .home-install { margin-top: 1.75rem; }
+.home .home-links { margin-top: 1.1rem; }
+.home .home-shot { margin-top: 1.5rem; }
+.home .home-shot figcaption { margin-top: 0.7rem; }
+.home .home-parts dd { margin: 0.3rem 0 0; padding: 0; }
+.home .home-title { margin-top: 0.4rem; }
+
+/* ============================================================================
+ * Docs chrome
+ * ============================================================================ */
+
+/* Sidebar: small group labels, a tinted marker for the current page. */
+.sidebar-content .group-label .large {
+	font-family: 'Rubik', var(--sl-font);
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-2);
+}
+.sidebar-content a {
+	border-radius: 8px;
+}
+.sidebar-content [aria-current='page'],
+.sidebar-content [aria-current='page']:hover,
+.sidebar-content [aria-current='page']:focus {
+	background: color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
+	color: var(--sl-color-text-accent);
+	font-weight: 600;
+}
+
+/* Heading links only when you point at the heading. */
+.sl-markdown-content .sl-anchor-link {
+	opacity: 0;
+	transition: opacity 0.15s;
+}
+.sl-markdown-content .sl-heading-wrapper:hover .sl-anchor-link,
+.sl-markdown-content .sl-anchor-link:focus-visible {
+	opacity: 0.6;
+}
+
+/* Inline code: a quiet chip. */
+.sl-markdown-content :not(pre) > code {
+	padding: 0.12em 0.4em;
+	border: none;
+	border-radius: 6px;
+	background: var(--sl-color-gray-5);
+	font-size: 0.86em;
+}
+
+/* Tables: hairlines, no zebra. */
+.sl-markdown-content table {
+	font-size: 0.95rem;
+}
+.sl-markdown-content th {
+	font-family: 'Rubik', var(--sl-font);
+	font-weight: 600;
+	color: var(--sl-color-gray-1);
+	border-bottom-color: var(--sl-color-gray-3);
+}
+.sl-markdown-content td {
+	border-bottom-color: var(--sl-color-gray-5);
+}
+
+/* Asides: muted tints, a thin bar, not slabs of colour. */
+:root {
+	--sl-color-blue: #9cc3d6;
+	--sl-color-blue-low: #142027;
+	--sl-color-purple: #a8d08d;
+	--sl-color-purple-low: #18230f;
+	--sl-color-orange: #e2b56c;
+	--sl-color-orange-low: #261e10;
+	--sl-color-red: #eda197;
+	--sl-color-red-low: #2a1513;
+	--sl-color-green: #a8d08d;
+	--sl-color-green-low: #18230f;
+}
+[data-theme='light'] {
+	--sl-color-blue: #2f6177;
+	--sl-color-blue-low: #e1eef4;
+	--sl-color-purple: #4c662b;
+	--sl-color-purple-low: #e6f1d8;
+	--sl-color-orange: #835a12;
+	--sl-color-orange-low: #f6ecd8;
+	--sl-color-red: #9a3328;
+	--sl-color-red-low: #f8e4e0;
+	--sl-color-green: #4c662b;
+	--sl-color-green-low: #e6f1d8;
+}
+.starlight-aside {
+	border-inline-start-width: 3px;
+	border-radius: 0 10px 10px 0;
+}
+
+/* The page banner (e.g. the legacy-version notice): a quiet strip. */
+.sl-banner {
+	background: var(--sl-color-gray-5);
+	color: var(--sl-color-gray-1);
+	border-bottom: 1px solid var(--sl-color-gray-4);
+	font-size: var(--sl-text-sm);
+}
+.sl-banner a {
+	color: var(--sl-color-text-accent);
+}
+.sl-markdown-content .home-install code {
+	padding: 0;
+	background: none;
+	border-radius: 0;
+	font-size: 0.9rem;
 }

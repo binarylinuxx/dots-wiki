@@ -9,20 +9,39 @@ sends a command there, so compositor binds and scripts control the shell with it
 | Command | Does |
 |---|---|
 | `blxshell` | run the shell |
-| `blxshell settings` | open the settings app |
+| `blxshell settings [page]` | open the settings app, optionally on a page (`settings plugins`) |
 | `blxshell launcher [toggle\|open\|close]` | the app launcher |
-| `blxshell powermenu [toggle\|open\|close]` | the power menu |
-| `blxshell sidebar [both\|top\|bottom\|corner]` | the sidebar; `corner` grows out of the bottom-right corner |
 | `blxshell wallpapers` | the wallpaper picker |
+| `blxshell dashboard [toggle\|open\|close]` | the dashboard |
+| `blxshell sidebar [both\|top\|bottom\|corner]` | the sidebar; `corner` grows out of the bottom-right corner |
+| `blxshell popout wifi\|bluetooth\|audio\|battery` | a status icon's popout |
+| `blxshell osd` | the volume slider |
+| `blxshell powermenu [toggle\|open\|close]` | the power menu |
 | `blxshell lock` | lock the session |
-| `blxshell reload` | re-read the config and colours |
 | `blxshell media play-pause\|pause\|next\|previous` | the active media player |
+| `blxshell reload` | re-read the config and colours |
 | `blxshell ping` | exits 0 when a shell is running |
 | `blxshell help` | list the commands |
 
+## Plugins and themes
+
+| Command | Does |
+|---|---|
+| `blxshell search [words]` | what the plugin repositories offer |
+| `blxshell install <id\|file.blx>` | install a plugin or theme |
+| `blxshell update [id…]` | newer versions of what you installed |
+| `blxshell remove <id>` | uninstall |
+| `blxshell plugin list\|enable\|disable <id>` | installed plugins, on or off |
+| `blxshell plugin call <id> <command>` | send a running plugin one of its commands |
+| `blxshell theme list\|apply <id>\|reset` | colour themes |
+| `blxshell repo list\|add\|remove` | extra plugin repositories |
+| `blxshell pack <folder>` / `inspect <file>` | make or check a `.blx` package |
+
+More in [installing plugins](/plugins/installing/).
+
 ## Binds
 
-```conf
+```ini
 # Hyprland
 bind = SUPER, SPACE, exec, blxshell launcher
 bind = SUPER, L, exec, blxshell lock

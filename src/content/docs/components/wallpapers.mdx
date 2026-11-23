@@ -1,10 +1,45 @@
 ---
-title: Wallpapers
-description: Wallpaper management and theming
-banner:
-  content: This page describes the Quickshell blxshell, which is no longer maintained. <a href="/legacy/quickshell/">What changed</a>
+title: Wallpapers and colours
+description: Setting the wallpaper, the palette generated from it, and themes
 ---
 
-PLACEHOLDER: Wallpaper system documentation
+## Wallpaper
 
-Press `Super + W` to change wallpaper.
+Pick one in the launcher's carousel (`/wallpaper`, or `blxshell wallpapers`),
+which shows the images in `~/.local/wallpapers`. `/random-wallpaper` picks one
+for you.
+
+**Settings → Desktop** sets how it appears after login and unlock (an iris, a
+fade, a rise, or nothing) and whether it shifts slightly as you change
+workspace.
+
+## Colours
+
+The palette follows the wallpaper: [matugen](https://github.com/InioX/matugen)
+generates a Material colour scheme from it each time it changes, and every part
+of the shell redraws in it. In **Settings → Theme**:
+
+- **Mode**: dark or light.
+- **Palette style**: tonal, content, expressive, fidelity, fruit salad, mono,
+  neutral, rainbow or vibrant.
+- **Colour from wallpaper**: the most vivid, darkest or lightest colour leads.
+- **Contrast**.
+- **Build colours from**: the wallpaper, or a seed colour you choose.
+- **Preset**: neutral surfaces, AMOLED black, or mono accents on top of the
+  generated scheme.
+
+**Settings → Colours** overrides any single role (primary, surface, text, …).
+
+## Themes
+
+A theme is a package that sets the colours for you: either a fixed palette, or
+a set of generation settings like the ones above.
+
+```sh
+blxshell theme list
+blxshell theme apply dev.blxshell.forest
+blxshell theme reset         # back to your own colour settings
+```
+
+Themes change colours only. The format is in
+[publishing](/plugins/publishing/).

@@ -1,12 +1,51 @@
 ---
 title: Launcher
-description: Application launcher and search
-banner:
-  content: This page describes the Quickshell blxshell, which is no longer maintained. <a href="/legacy/quickshell/">What changed</a>
+description: Finding and starting apps, the slash commands, and the wallpaper picker
 ---
 
-PLACEHOLDER: Launcher documentation
+The launcher rises out of the bar. Open it with the `os` button on the bar, or
+from a bind:
 
-Press `Super + Space` to open.
+```sh
+blxshell launcher            # toggle; also open or close
+```
 
-Location: `~/.config/quickshell/launcher/`
+Type to search, arrow keys to move, Enter to start, Escape to close.
+
+## Ranking
+
+With nothing typed, apps are listed by name, by how often you use them, or by
+when you last did (**Settings → Apps → Order**). Favourites can go first.
+While you type, matches rank by name, then by description if you allow it, and
+favourites and preferred apps win ties.
+
+In **Settings → Apps** you can also:
+
+- mark favourites, and apps that should win searches;
+- hide apps you never want to see;
+- rename apps;
+- stop it recording usage.
+
+## Commands
+
+Start with `/` for commands instead of apps:
+
+| Command | Does |
+|---|---|
+| `/wallpaper` | the wallpaper picker (below) |
+| `/random-wallpaper` | a random wallpaper |
+| `/calc 2^10 / 3` | a calculator |
+| `/variant` | the palette style generated from the wallpaper |
+| `/scheme`, `/set-light`, `/set-dark` | light or dark colours |
+| `/toggle-icon-tint`, `/toggle-tray-tint` | tint app or tray icons with the accent colour |
+| `/outline` | the colour of the outline around the shell |
+| `/emoji` | search for an emoji and copy it |
+| `/quickshare` | send files to a nearby LocalSend device |
+| `/lock`, `/suspend-then-hibernate` | lock, or go to sleep |
+
+## Wallpaper picker
+
+`/wallpaper`, or `blxshell wallpapers`, turns the launcher into a carousel of
+the images in `~/.local/wallpapers`, starting at the current one. Picking one
+sets it and regenerates the colours from it. See
+[wallpapers and colours](/components/wallpapers/).

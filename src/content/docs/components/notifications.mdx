@@ -1,10 +1,46 @@
 ---
-title: Notifications
-description: Notification system
-banner:
-  content: This page describes the Quickshell blxshell, which is no longer maintained. <a href="/legacy/quickshell/">What changed</a>
+title: Notifications and sidebar
+description: Notification popups, the sidebar with their history, quick tiles and the volume slider
 ---
 
-PLACEHOLDER: Notification system documentation
+blxshell is its own notification daemon, unless another one is already
+running when it starts.
 
-Location: `~/.config/quickshell/notifications/`
+## Popups
+
+New notifications appear at the top right (or left) and stack, newest on top.
+Pointing at the stack spreads it out. **Settings → Panels → Notifications**
+sets the side, the width, how many show at once, and whether images show.
+
+## Sidebar
+
+The sidebar holds the notification history. Pull it out of the **top-right
+corner**: press there and drag left; when you let go it finishes opening or
+closing, whichever is nearer. On zwwm, a touch swipe in from the right edge does the same.
+
+Under it is the **utility stack**, pulled out of the **bottom-right corner** on
+its own:
+
+- quick tiles for Wi-Fi, Bluetooth, the microphone, do not disturb, Quick
+  Share, the settings app and the lock screen (each can be hidden);
+- a media card for the active player;
+- screen brightness, keep awake, and the screen recorder (full screen or a
+  region, with or without sound).
+
+From a bind:
+
+```sh
+blxshell sidebar             # both parts
+blxshell sidebar top         # the notifications only
+blxshell sidebar bottom      # the utility stack, sliding in
+blxshell sidebar corner      # the utility stack, growing out of the corner
+```
+
+**Settings → Sidebar** sets its width, the tiles' size and corners, the cards
+and the size of the corner you pull from.
+
+## Volume
+
+A slider for output and input volume comes out of the right edge, halfway down:
+tug it out with the pointer, or `blxshell osd`. It can also show itself
+whenever the volume changes (**Settings → Panels → Volume**).

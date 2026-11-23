@@ -1,10 +1,58 @@
 ---
 title: Bar
-description: The Quickshell panel and widgets
-banner:
-  content: This page describes the Quickshell blxshell, which is no longer maintained. <a href="/legacy/quickshell/">What changed</a>
+description: The bar along the bottom edge, its modules and their popouts
 ---
 
-PLACEHOLDER: Bar component documentation
+The bar is the bottom edge of the shell's frame. It has three zones (left,
+centre, right), and each holds modules in the order you list them. A module in
+no zone is off.
 
-Location: `~/.config/quickshell/bar/`
+Arrange it in **Settings → Bar**, or in `~/.config/blxshell/config.json`:
+
+```json
+"bar": {
+  "left": ["os", "workspaces"],
+  "center": ["window"],
+  "right": ["tray", "keyboard", "clock", "status", "power"]
+}
+```
+
+## Modules
+
+| Id | Shows | Click |
+|---|---|---|
+| `os` | your distribution's logo (`bar.osIcon`: `runix`, or any icon theme name) | opens the launcher |
+| `workspaces` | zwwm tags, Hyprland workspaces or Halley clusters; as app icons, dots or numbers (`bar.workspaceStyle`) | switches; scroll for the next or previous |
+| `window` | the focused window's title, up to `bar.titleWidth` pixels | |
+| `tray` | system tray icons, tinted to the palette unless you turn that off | activates; right click for the item's menu |
+| `keyboard` | the keyboard layout (Hyprland) | next layout |
+| `clock` | the time, as a strftime format (`bar.clockFormat`, e.g. `%H:%M`) | |
+| `status` | network, Bluetooth, audio, battery or power profile, Quick Share, desktop widgets | see below |
+| `power` | the power button | opens the power menu |
+
+Plugins add their own modules, placed the same way as
+`"<plugin id>:<module id>"`. See [plugins](/plugins/discover/).
+
+## Status icons
+
+Pointing at a status icon opens its popout; clicking pins it open. A right
+click is the quick action:
+
+| Icon | Popout | Right click |
+|---|---|---|
+| Network | connection, Wi-Fi networks to join | Wi-Fi on or off |
+| Bluetooth | adapter and devices | power on or off |
+| Audio | output and input volume, devices | mute |
+| Battery | charge and power profile | next power profile |
+| Quick Share | sends files to nearby LocalSend devices | |
+| Widgets | toggles moving the desktop widgets | |
+
+Each icon can be hidden in **Settings → Bar → Status icons**. To open a popout
+from a bind: `blxshell popout wifi` (or `bluetooth`, `audio`, `battery`).
+
+## Power menu
+
+The power button opens a column of actions in the bottom-right corner: lock,
+log out, suspend, hibernate, restart, restart to firmware and power off. Which
+ones show, and the command each runs, are set in **Settings → Power menu**.
+`blxshell powermenu` opens it from a bind.

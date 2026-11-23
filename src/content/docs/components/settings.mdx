@@ -1,12 +1,43 @@
 ---
 title: Settings
-description: Settings panel configuration
-banner:
-  content: This page describes the Quickshell blxshell, which is no longer maintained. <a href="/legacy/quickshell/">What changed</a>
+description: The settings app, and the config file it edits
 ---
 
-PLACEHOLDER: Settings panel documentation
+The settings app is a separate window that edits
+`~/.config/blxshell/config.json`. The running shell watches that file and
+applies every change as you make it, so there is nothing to save or restart.
 
-Press `Super + S` to open.
+```sh
+blxshell settings            # open it
+blxshell settings plugins    # open it on a page, by title
+```
 
-Location: `~/.config/quickshell/widgets/Settings.qml`
+There is one settings window: opening it again closes the old one and opens a
+new one where you are. The sidebar's settings tile opens it too.
+
+## Pages
+
+| Page | What's on it |
+|---|---|
+| Theme | the palette: dark or light, palette style, which wallpaper colour leads, contrast; or a seed colour; opacity, outline, shadow |
+| Colours | override any single colour role |
+| Shape | frame thickness and corners, bar height, panel corners |
+| Type & motion | fonts, text size, animation speed and style |
+| Apps | the launcher's ordering, favourites, hidden apps and names |
+| Bar | module layout, clock format, workspace style, status icons |
+| Sidebar | width, quick tiles, cards |
+| Panels | notification popups, the dashboard, the media island, the volume slider |
+| Power menu | which actions show and their commands |
+| Lock screen | clock style and format, tint, blur, what shows |
+| Desktop | wallpaper parallax and transition, the desktop clock and weather |
+| Plugins | installed plugins: on or off, their bar modules and settings |
+| About | where the config file is |
+
+Every page except Plugins has a **Reset** button that puts that page back to
+its defaults.
+
+## The config file
+
+Everything the app sets is plain JSON, so you can edit the file by hand, keep it
+in your dotfiles, or change it from scripts; the shell picks up those changes
+the same way. `blxshell reload` re-reads it if you need to force it.
