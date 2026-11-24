@@ -53,6 +53,22 @@ bumps `version` in its manifest.
   survives a missing sensor, file or connection.
 - **Compositors**: `"any"` only if it really works everywhere.
 
+### Compiled plugins
+
+The official pool accepts no compiled binaries: no executables, libraries,
+object files, WebAssembly, or archives. A plugin in a compiled language
+commits its source and a `build.sh`; CI runs it on GitHub's `ubuntu-latest`
+in a throwaway copy, and the package gets the committed files plus whatever
+the build put in `bin/`. The program named in `exec` has to be there
+afterwards. So the code reviewers read is the code users run.
+
+```text
+plugins/io.github.you.weather/
+├── manifest.json        "exec": ["bin/weather"]
+├── build.sh             builds into bin/
+└── src/…
+```
+
 ## Custom repositories
 
 You can add other repositories too, such as a friend's collection, your own
