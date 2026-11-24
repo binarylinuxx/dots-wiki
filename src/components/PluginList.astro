@@ -6,15 +6,13 @@ interface Props {
   repo?: string;    // owner/name on GitHub
   branch?: string;
 }
-import { loadPackages, REPO } from '../lib/plugin-repo.mjs';
-
 const { repo = 'binarylinuxx/dots-plugins', branch = 'main' } = Astro.props;
-// Packages that got a page on the wiki at build time; anything merged since
-// links to its folder on GitHub until the next build.
-const pages = repo === REPO ? (await loadPackages()).map((entry) => entry.id) : [];
+// The official repository's packages have a live page here; another
+// repository's link to their folders on GitHub.
+const official = repo === 'binarylinuxx/dots-plugins';
 ---
 
-<div class="plugin-list" data-repo={repo} data-branch={branch} data-pages={pages.join(' ')}>
+<div class="plugin-list" data-repo={repo} data-branch={branch} data-official={official ? 'yes' : ''}>
   <p class="plugin-status">Loading plugins from <a href={`https://github.com/${repo}`}>{repo}</a>…</p>
   <div class="plugin-cards"></div>
 </div>
@@ -43,8 +41,8 @@ const pages = repo === REPO ? (await loadPackages()).map((entry) => entry.id) : 
 
   const chip = (label: string, tone = '') => text('span', `plugin-chip ${tone}`.trim(), label);
 
-  function card(manifest: Manifest, path: string, raw: string, repo: string, branch: string, pages: Set<string>) {
-    const target = pages.has(manifest.id) ? `/plugins/${manifest.id}/` : `https://github.com/${repo}/tree/${branch}/${path}`;
+  function card(manifest: Manifest, path: string, raw: string, repo: string, branch: string, official: boolean) {
+    const target = official ? `/plugins/view/?id=${encodeURIComponent(manifest.id)}` : `https://github.com/${repo}/tree/${branch}/${path}`;
     const article = document.createElement('article');
     article.className = 'plugin-card';
     article.id = manifest.id;
@@ -88,7 +86,7 @@ const pages = repo === REPO ? (await loadPackages()).map((entry) => entry.id) : 
     const more = document.createElement('a');
     more.className = 'plugin-more';
     more.href = target;
-    more.textContent = pages.has(manifest.id) ? 'Details →' : 'On GitHub →';
+    more.textContent = official ? 'Details →' : 'On GitHub →';
     footer.append(more);
     article.append(footer);
     return article;
@@ -97,7 +95,7 @@ const pages = repo === REPO ? (await loadPackages()).map((entry) => entry.id) : 
   async function load(root: HTMLElement) {
     const repo = root.dataset.repo!;
     const branch = root.dataset.branch!;
-    const pages = new Set((root.dataset.pages ?? '').split(' ').filter(Boolean));
+    const official = root.dataset.official === 'yes';
     const raw = `https://raw.githubusercontent.com/${repo}/${branch}`;
     const status = root.querySelector<HTMLElement>('.plugin-status')!;
     const cards = root.querySelector<HTMLElement>('.plugin-cards')!;
@@ -122,7 +120,7 @@ const pages = repo === REPO ? (await loadPackages()).map((entry) => entry.id) : 
         if (group === themes) cards.append(text('h3', 'plugin-group', 'Themes'));
         const grid = document.createElement('div');
         grid.className = 'plugin-grid';
-        for (const { entry, manifest } of group) grid.append(card(manifest, entry.path, raw, repo, branch, pages));
+        for (const { entry, manifest } of group) grid.append(card(manifest, entry.path, raw, repo, branch, official));
         cards.append(grid);
       }
       const failed = results.length - loaded.length;

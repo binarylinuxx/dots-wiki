@@ -1,22 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import { loadPackages, pageLink } from './src/lib/plugin-repo.mjs';
-
-// One sidebar entry per package in the official plugin repository, read at
-// build time (src/pages/plugins/[id].astro makes the pages).
-const pluginPages = (await loadPackages()).map(({ id, manifest }) => ({
-	label: manifest.name,
-	link: pageLink(id),
-	badge: manifest.type === 'theme' ? { text: 'theme', variant: 'note' } : undefined,
-}));
-
-// https://astro.build/config
 export default defineConfig({
 	site: 'https://bshell.zapzig.org',
 	integrations: [
 		starlight({
 			title: 'blxshell',
+			// Our own 404 sends old /plugins/<id>/ links to the live plugin page.
+			disable404Route: true,
 			description: 'blxshell Vellum: a Material You desktop shell in C++ on vw',
 			logo: {
 				src: './src/assets/logo.svg',
@@ -89,7 +80,6 @@ export default defineConfig({
 				label: 'Plugins',
 				items: [
 					{ label: 'Browse', slug: 'plugins/discover' },
-					...(pluginPages.length ? [{ label: 'All plugins', items: pluginPages }] : []),
 					{ label: 'Installing', slug: 'plugins/installing' },
 					{ label: 'Publishing', slug: 'plugins/publishing' },
 				],

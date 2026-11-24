@@ -1,0 +1,229 @@
+---
+// One page for every package in the official repository, filled in the
+// browser from GitHub: /plugins/view/?id=<id>. Nothing here is built ahead,
+// so a package merged a minute ago already has its page.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+
+const repo = 'binarylinuxx/dots-plugins';
+const branch = 'main';
+---
+
+<StarlightPage frontmatter={{ title: 'Plugin', description: 'A blxshell plugin or theme, read live from its repository' }} headings={[]}>
+  <div class="plugin-page" data-repo={repo} data-branch={branch}>
+    <p class="plugin-page-status">Loading…</p>
+  </div>
+</StarlightPage>
+
+<script>
+  import { micromark } from 'micromark';
+  import { gfm, gfmHtml } from 'micromark-extension-gfm';
+
+  type Manifest = {
+    id: string;
+    type: 'plugin' | 'theme';
+    name: string;
+    version: string;
+    description?: string;
+    previews?: string[];
+    compositors?: string[];
+    blxshell?: string;
+    license?: string;
+    authors?: (string | { name: string; url?: string })[];
+    plugin?: { facet?: string; exec?: string[]; native?: string; permissions?: string[] };
+    colours?: { kind?: string };
+  };
+
+  const meaning: Record<string, string> = {
+    shell: 'Runs blxshell commands: opens panels, the launcher or the dashboard, locks the screen. Enforced by blxshell.',
+    notifications: 'Shows desktop notifications. Enforced by blxshell.',
+    network: 'Talks to the network.',
+    filesystem: 'Reads or writes files outside its own folder.',
+    spawn: 'Starts other programs.',
+    native: 'Includes C++ that runs inside the shell. Built by CI from the source in its repository.',
+  };
+
+  // Elements, never HTML strings, for anything that comes from the repository.
+  function el<K extends keyof HTMLElementTagNameMap>(tag: K, props: Partial<HTMLElementTagNameMap[K]> = {}, ...children: (Node | string)[]) {
+    const element = Object.assign(document.createElement(tag), props);
+    element.append(...children);
+    return element;
+  }
+  const code = (text: string) => el('code', { textContent: text });
+  const link = (href: string, text: string) => el('a', { href, textContent: text });
+  const row = (label: string, ...value: (Node | string)[]) => el('tr', {}, el('th', { textContent: label }), el('td', {}, ...value));
+  const heading = (id: string, text: string) => el('h2', { id, textContent: text });
+  const pre = (text: string) => el('pre', {}, code(text));
+
+  async function fetchText(url: string) {
+    const response = await fetch(url, { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`${response.status} ${url}`);
+    return response.text();
+  }
+
+  function setTitle(text: string) {
+    document.title = `${text} | blxshell`;
+    const title = document.querySelector('h1#_top');
+    if (title) title.textContent = text;
+  }
+
+  async function load(root: HTMLElement) {
+    const repo = root.dataset.repo!;
+    const branch = root.dataset.branch!;
+    const raw = `https://raw.githubusercontent.com/${repo}/${branch}`;
+    const tree = `https://github.com/${repo}/tree/${branch}`;
+    const id = new URLSearchParams(location.search).get('id') ?? '';
+    const status = root.querySelector<HTMLElement>('.plugin-page-status')!;
+    const fail = (...message: (Node | string)[]) => {
+      status.replaceChildren(...message);
+    };
+    if (!id) {
+      fail('No plugin named. ', link('/plugins/discover/', 'Browse the plugins'), '.');
+      return;
+    }
+    let listing;
+    try {
+      listing = JSON.parse(await fetchText(`${raw}/list.json`));
+    } catch (error) {
+      fail(`Couldn't reach the plugin repository (${error instanceof Error ? error.message : error}). `,
+           link(`https://github.com/${repo}`, 'See it on GitHub'), '.');
+      return;
+    }
+    const entry = (listing.packages ?? []).find((item: { id: string }) => item.id === id);
+    if (!entry) {
+      setTitle('Not found');
+      fail('There is no ', code(id), ' in the official repository. ', link('/plugins/discover/', 'Browse the plugins'), '.');
+      return;
+    }
+    const path: string = entry.path;
+    let manifest: Manifest;
+    try {
+      manifest = JSON.parse(await fetchText(`${raw}/${path}/manifest.json`));
+    } catch (error) {
+      fail(`Couldn't read its manifest (${error instanceof Error ? error.message : error}).`);
+      return;
+    }
+    const plugin = manifest.plugin ?? {};
+    const isPlugin = manifest.type === 'plugin';
+    const [readme, facet] = await Promise.all([
+      fetchText(`${raw}/${path}/README.md`).catch(() => null),
+      plugin.facet ? fetchText(`${raw}/${path}/${plugin.facet}`).catch(() => null) : Promise.resolve(null),
+    ]);
+    const views = facet ? [...facet.matchAll(/^\s*view\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(/gm)].map((m) => m[1]) : [];
+    const barViews = views.filter((view) => view.startsWith('Bar'));
+    const hasSettings = views.includes('Settings');
+
+    setTitle(manifest.name);
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta && manifest.description) meta.setAttribute('content', manifest.description);
+
+    const content: Node[] = [];
+    for (const preview of manifest.previews ?? [])
+      content.push(el('img', { className: 'plugin-hero', src: `${raw}/${path}/${preview}`, alt: `${manifest.name} in the bar` }));
+
+    // About
+    content.push(heading('about', 'About'));
+    if (manifest.description) content.push(el('p', { textContent: manifest.description }));
+    const compositors = manifest.compositors ?? [];
+    const authors = (manifest.authors ?? []).map((author) => (typeof author === 'string' ? { name: author } : author));
+    const about = el('tbody', {},
+      row('Id', code(manifest.id)),
+      row('Version', manifest.version),
+      row('Type', isPlugin ? 'Plugin' : `${manifest.colours?.kind ?? ''} theme`.trim()),
+      row('Works under', compositors.includes('any') ? 'any compositor' : compositors.join(', ')));
+    if (manifest.blxshell) about.append(row('blxshell', code(manifest.blxshell)));
+    if (authors.length)
+      about.append(row('By', ...authors.flatMap((author, index) => [
+        ...(index ? [', '] : []), author.url ? link(author.url, author.name) : author.name])));
+    if (manifest.license) about.append(row('License', manifest.license));
+    about.append(row('Source', link(`${tree}/${path}`, path)));
+    content.push(el('table', {}, about));
+
+    // Using it
+    if (barViews.length || hasSettings) {
+      content.push(heading('using-it', 'Using it'));
+      const text = el('p', {}, 'Turn it on in ', el('strong', { textContent: 'Settings → Plugins' }), '.');
+      if (barViews.length)
+        text.append(` Place ${barViews.length === 1 ? 'its bar module' : 'its bar modules'} from the same page, or add the id to `,
+                    code('bar.left'), ', ', code('bar.center'), ' or ', code('bar.right'), ' in ', code('config.json'), '.');
+      if (hasSettings) text.append(' Its settings are on its page there too.');
+      content.push(text);
+      if (barViews.length)
+        content.push(el('table', {},
+          el('thead', {}, el('tr', {}, el('th', { textContent: 'Bar module' }))),
+          el('tbody', {}, ...barViews.map((view) => el('tr', {}, el('td', {}, code(`${manifest.id}:${view}`)))))));
+    }
+
+    // How it's built
+    const parts: [string, string, string][] = [];
+    if (plugin.facet) parts.push(['Facet views', plugin.facet, 'drawn by the shell, confined to what it hands them']);
+    if (plugin.exec) parts.push(['A process', plugin.exec[0], 'its logic, talking to the shell over JSON lines']);
+    if (plugin.native) parts.push(['C++', plugin.native, 'built by CI from its source, runs inside the shell']);
+    if (parts.length) {
+      content.push(heading('how-its-built', "How it's built"));
+      content.push(el('table', {}, el('tbody', {}, ...parts.map(([part, file, detail]) => row(part, link(`${tree}/${path}/${file}`, file), `: ${detail}`)))));
+    }
+
+    // Permissions
+    if (isPlugin) {
+      const permissions = plugin.permissions ?? [];
+      content.push(heading('permissions', 'Permissions'));
+      content.push(permissions.length
+        ? el('ul', {}, ...permissions.map((permission) => el('li', {}, code(permission), `: ${meaning[permission] ?? 'An unknown permission.'}`)))
+        : el('p', { textContent: 'None: it only shows its views and reacts to clicks.' }));
+      content.push(el('p', { className: 'plugin-page-note', textContent:
+        'A plugin runs as you, like any program you start. Permissions limit what it may ask blxshell to do and say what it does; they aren\'t a sandbox. Everything in the official pool is reviewed before it\'s merged.' }));
+    }
+
+    // Install
+    content.push(heading('install', 'Install'));
+    content.push(pre(`blxshell install ${manifest.id}`));
+    content.push(el('p', {},
+      ...(isPlugin
+        ? ['Then turn it on in ', el('strong', { textContent: 'Settings → Plugins' }), ', or with ', code(`blxshell plugin enable ${manifest.id}`), '. ']
+        : ['Then apply it with ', code(`blxshell theme apply ${manifest.id}`), '. ']),
+      code('blxshell update'), ' keeps it current. More in ', link('/plugins/installing/', 'Installing'), '.'));
+
+    // README, rendered here; raw HTML in it is dropped.
+    if (readme) {
+      // Under its own headings, or under "More" when it starts with text.
+      if (!/^\s*#/.test(readme)) content.push(heading('more', 'More'));
+      const more = el('div', { className: 'plugin-page-readme' });
+      more.innerHTML = micromark(readme, { extensions: [gfm()], htmlExtensions: [gfmHtml()] });
+      content.push(more);
+    }
+
+    root.replaceChildren(...content);
+    if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+  }
+
+  document.querySelectorAll<HTMLElement>('.plugin-page').forEach(load);
+</script>
+
+<style is:global>
+  .plugin-page .plugin-hero {
+    display: block;
+    width: 100%;
+    max-width: 40rem;
+    margin-inline: auto;
+    border-radius: 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+  }
+  .plugin-page th {
+    white-space: nowrap;
+  }
+  .plugin-page pre {
+    overflow-x: auto;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 10px;
+    background: var(--sl-color-gray-6);
+  }
+  .plugin-page pre code {
+    padding: 0;
+    background: none;
+  }
+  .plugin-page .plugin-page-note,
+  .plugin-page .plugin-page-status {
+    color: var(--sl-color-gray-2);
+  }
+</style>

@@ -1,0 +1,15 @@
+---
+// Not found. Old plugin pages, /plugins/<id>/, now live at
+// /plugins/view/?id=<id>: those are sent on before anything shows.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+---
+
+<StarlightPage frontmatter={{ title: 'Not found', description: 'This page does not exist', template: 'splash' }}>
+  <script is:inline>
+    (function () {
+      var match = location.pathname.match(/^\/plugins\/([a-z][a-z0-9_-]*(?:\.[a-z0-9_-]+)+)\/?$/);
+      if (match) location.replace('/plugins/view/?id=' + encodeURIComponent(match[1]) + location.hash);
+    })();
+  </script>
+  <p>There's nothing at this address. Try the <a href="/">home page</a>, the search, or <a href="/plugins/discover/">the plugins</a>.</p>
+</StarlightPage>
