@@ -69,6 +69,17 @@ plugins/io.github.you.weather/
 └── src/…
 ```
 
+## Writing a plugin
+
+A plugin draws its UI in [Facet](https://github.com/binarylinuxx/vw/tree/main/facet):
+views named `Bar…` are bar modules, and a `Settings` view is its page in the
+settings app. Its store holds its settings and state. A process in any
+language can sit behind the views for the real work, and C++ is possible when
+Facet isn't enough. The reference, with the full list of what views get and
+the process protocol, is
+[docs/packages.md](https://github.com/binarylinuxx/dots/blob/main/docs/packages.md);
+the official plugins are working examples.
+
 ## Custom repositories
 
 You can add other repositories too, such as a friend's collection, your own
@@ -83,10 +94,11 @@ my-plugins/                      a GitHub repository
 ├── list.json                    what the repository offers
 ├── plugins/
 │   └── io.github.you.cpu/       one folder per package
-│       ├── manifest.json
+│       ├── manifest.json        who it is and what it may do
+│       ├── plugin.facet         its views: Bar… modules, Settings page
+│       ├── bin/cpu.py           optional: a process behind the views
 │       ├── screenshot.png
-│       ├── README.md            optional: shown on the package's page
-│       └── bin/cpu.py
+│       └── README.md            optional: shown on the package's page
 └── themes/
     └── io.github.you.forest/
         └── manifest.json

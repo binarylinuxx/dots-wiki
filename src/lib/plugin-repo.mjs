@@ -23,7 +23,7 @@ async function text(url) {
 
 /**
  * Every package the repository lists, with its manifest:
- * [{ id, path, manifest, readme }], plugins first, each group by name.
+ * [{ id, path, manifest, readme, views }], plugins first, each group by name.
  * Never throws: without network the wiki still builds, just without the
  * per-plugin pages (they come back on the next build).
  */
@@ -38,7 +38,10 @@ export function loadPackages() {
             const manifest = await json(`${RAW}/${entry.path}/manifest.json`);
             if (manifest.id !== entry.id) return null;
             const readme = await text(`${RAW}/${entry.path}/README.md`);
-            return { id: entry.id, path: entry.path, manifest, readme };
+            // Its views, from its Facet file: "view Name(" lines.
+            const facet = manifest.plugin?.facet ? await text(`${RAW}/${entry.path}/${manifest.plugin.facet}`) : null;
+            const views = facet ? [...facet.matchAll(/^\s*view\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(/gm)].map((m) => m[1]) : [];
+            return { id: entry.id, path: entry.path, manifest, readme, views };
           } catch (error) {
             console.warn(`[plugins] skipping ${entry.id}: ${error.message}`);
             return null;

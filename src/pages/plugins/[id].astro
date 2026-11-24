@@ -15,9 +15,13 @@ const { entry } = Astro.props;
 const { manifest, path } = entry;
 const plugin = manifest.plugin ?? {};
 const isPlugin = manifest.type === 'plugin';
-const modules = plugin.barModules ?? [];
-const settings = plugin.settings ?? [];
-const commands = plugin.commands ?? [];
+const barViews = (entry.views ?? []).filter((view) => view.startsWith('Bar'));
+const hasSettings = (entry.views ?? []).includes('Settings');
+const parts = [
+  plugin.facet && ['Facet views', `${plugin.facet}: drawn by the shell, confined to what it hands them`],
+  plugin.exec && ['A process', `${plugin.exec[0]}: its logic, talking to the shell over JSON lines`],
+  plugin.native && ['C++', `${plugin.native}: built by CI from its source, runs inside the shell`],
+].filter(Boolean);
 const permissions = plugin.permissions ?? [];
 const compositors = manifest.compositors ?? [];
 const authors = (manifest.authors ?? []).map((author) => (typeof author === 'string' ? { name: author } : author));
@@ -30,6 +34,7 @@ const meaning = {
   network: 'Talks to the network.',
   filesystem: 'Reads or writes files outside its own folder.',
   spawn: 'Starts other programs.',
+  native: 'Includes C++ that runs inside the shell. Built by CI from the source in this repository.',
 };
 
 const shown = (value) => (value === undefined || value === '' ? '—' : typeof value === 'string' ? value : JSON.stringify(value));
@@ -42,9 +47,8 @@ if (entry.readme) {
 
 const headings = [
   { depth: 2, slug: 'about', text: 'About' },
-  ...(modules.length ? [{ depth: 2, slug: 'using-it', text: 'Using it' }] : []),
-  ...(settings.length ? [{ depth: 2, slug: 'settings', text: 'Settings' }] : []),
-  ...(commands.length ? [{ depth: 2, slug: 'keybinds', text: 'Keybinds' }] : []),
+  ...(barViews.length || hasSettings ? [{ depth: 2, slug: 'using-it', text: 'Using it' }] : []),
+  ...(parts.length ? [{ depth: 2, slug: 'how-its-built', text: "How it's built" }] : []),
   ...(isPlugin ? [{ depth: 2, slug: 'permissions', text: 'Permissions' }] : []),
   { depth: 2, slug: 'install', text: 'Install' },
   ...(readme ? [{ depth: 2, slug: 'readme', text: 'More' }] : []),
@@ -75,62 +79,29 @@ const headings = [
     </tbody>
   </table>
 
-  {modules.length > 0 && (
+  {(barViews.length > 0 || hasSettings) && (
     <>
       <h2 id="using-it">Using it</h2>
       <p>
-        Turn it on in <strong>Settings → Plugins</strong>, then place
-        {modules.length === 1 ? ' its module ' : ' its modules '}
-        in the bar from the same page, or add the id to <code>bar.left</code>,
-        <code>bar.center</code> or <code>bar.right</code> in <code>config.json</code>.
+        Turn it on in <strong>Settings → Plugins</strong>.
+        {barViews.length > 0 && <> Place {barViews.length === 1 ? 'its bar module' : 'its bar modules'} from the same page, or add the id to <code>bar.left</code>, <code>bar.center</code> or <code>bar.right</code> in <code>config.json</code>.</>}
+        {hasSettings && <> Its settings are on its page there too.</>}
       </p>
-      <table>
-        <thead><tr><th>Bar module</th><th>Id</th><th>Controls</th></tr></thead>
-        <tbody>
-          {modules.map((module) => (
-            <tr>
-              <td>{module.name ?? module.id}</td>
-              <td><code>{manifest.id}:{module.id}</code></td>
-              <td>{module.description ?? '—'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {barViews.length > 0 && (
+        <table>
+          <thead><tr><th>Bar module</th></tr></thead>
+          <tbody>{barViews.map((view) => <tr><td><code>{manifest.id}:{view}</code></td></tr>)}</tbody>
+        </table>
+      )}
     </>
   )}
 
-  {settings.length > 0 && (
+  {parts.length > 0 && (
     <>
-      <h2 id="settings">Settings</h2>
-      <p>
-        In <strong>Settings → Plugins</strong> while it's on, or under
-        <code>plugins.settings."{manifest.id}"</code> in <code>config.json</code>.
-        Changes reach the running plugin straight away.
-      </p>
+      <h2 id="how-its-built">How it's built</h2>
       <table>
-        <thead><tr><th>Setting</th><th>Key</th><th>Type</th><th>Default</th></tr></thead>
-        <tbody>
-          {settings.map((setting) => (
-            <tr>
-              <td>
-                {setting.label ?? setting.key}
-                {setting.description && <><br /><small>{setting.description}</small></>}
-              </td>
-              <td><code>{setting.key}</code></td>
-              <td>{setting.type === 'choice' ? (setting.choices ?? []).join(' / ') : setting.type}</td>
-              <td><code>{shown(setting.default)}</code></td>
-            </tr>
-          ))}
-        </tbody>
+        <tbody>{parts.map(([part, detail]) => <tr><th>{part}</th><td><code>{detail.split(':')[0]}</code>{':' + detail.split(':').slice(1).join(':')}</td></tr>)}</tbody>
       </table>
-    </>
-  )}
-
-  {commands.length > 0 && (
-    <>
-      <h2 id="keybinds">Keybinds</h2>
-      <p>It takes these commands, so you can drive it from compositor binds:</p>
-      <pre><code>{commands.map((command) => `blxshell plugin call ${manifest.id} ${command}`).join('\n')}</code></pre>
     </>
   )}
 
